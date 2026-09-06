@@ -1,112 +1,1062 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Save · premium navigation</title>
-  <!-- Font & Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Savmo · Save anything, remember later</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <style>
+    /* ----- RESET & BASE ----- */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
     }
-
     body {
       background: #0b0d0e;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      min-height: 100vh;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       padding: 0;
       margin: 0;
+      overflow-x: hidden;
+      color: #f0f2f4;
+      min-height: 100vh;
     }
-
-    /* --- app content : ensures nothing is hidden behind nav --- */
-    .app-content {
+    /* ----- APP SHELL ----- */
+    .app-shell {
       width: 100%;
       max-width: 480px;
-      flex: 1;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding: 0 20px 120px 20px;
+      background: #0b0d0e;
+      position: relative;
+    }
+    /* ----- HEADER SYSTEM ----- */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 13, 14, 0.92);
+      backdrop-filter: saturate(180%) blur(18px);
+      -webkit-backdrop-filter: saturate(180%) blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      padding: 12px 0 12px 0;
+      margin: 0 -20px;
+      padding-left: 20px;
+      padding-right: 20px;
+      transition: all 0.2s;
+    }
+    .app-header-inner {
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
-      padding: 24px 20px 100px 20px;
-      color: rgba(255,255,255,0.3);
-      text-align: center;
-      font-weight: 400;
-      letter-spacing: 0.2px;
-      pointer-events: none;
+      justify-content: space-between;
+      position: relative;
+      min-height: 44px;
     }
-    .app-content span {
-      background: rgba(255,255,255,0.04);
-      padding: 14px 28px;
-      border-radius: 60px;
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(255,255,255,0.04);
-      font-size: 0.95rem;
-      color: rgba(255,255,255,0.5);
+    /* HOME header — left: brand, right: icons */
+    .header-home-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .app-content small {
+    .header-home-left .brand-logo {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+    }
+    .header-home-left .brand-logo svg {
+      width: 32px;
+      height: 32px;
       display: block;
-      margin-top: 12px;
-      font-size: 0.8rem;
-      opacity: 0.4;
+    }
+    .header-home-left .brand-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #f0f2f4;
+      letter-spacing: -0.3px;
+      line-height: 1;
+    }
+    .header-home-right {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .header-icon-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.4);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+      position: relative;
+      min-width: 44px;
+      min-height: 44px;
+    }
+    .header-icon-btn:hover {
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.7);
+    }
+    .header-icon-btn:active {
+      transform: scale(0.94);
+    }
+    .header-icon-btn .badge {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #ff6b6b;
+      color: white;
+      font-size: 10px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #0b0d0e;
     }
 
-    /* ===== BOTTOM NAVIGATION ===== */
-    .bottom-nav {
+    /* SECONDARY header — back | title | notification */
+    .header-secondary-left {
+      display: flex;
+      align-items: center;
+      min-width: 44px;
+    }
+    .header-secondary-left .back-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.5);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+      min-width: 44px;
+      min-height: 44px;
+    }
+    .header-secondary-left .back-btn:hover {
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.7);
+    }
+    .header-secondary-left .back-btn:active {
+      transform: scale(0.94);
+    }
+
+    .header-secondary-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 17px;
+      font-weight: 600;
+      color: #f0f2f4;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+    }
+
+    .header-secondary-right {
+      display: flex;
+      align-items: center;
+      min-width: 44px;
+      justify-content: flex-end;
+    }
+
+    /* ----- PAGE CONTAINER ----- */
+    .page {
+      display: none;
+      animation: fadeIn 0.25s ease;
+      padding-top: 4px;
+    }
+    .page.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ----- GREETING (home only) ----- */
+    .greeting-block {
+      padding: 12px 0 6px 0;
+    }
+    .greeting-text {
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.3px;
+    }
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #f0f2f4;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      margin-top: 2px;
+    }
+    .page-subtitle {
+      font-size: 15px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.5);
+      margin-top: 4px;
+    }
+    .hero-stat {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.3);
+      margin-top: 4px;
+    }
+
+    /* ----- SEARCH ----- */
+    .search-wrap {
+      padding: 8px 0 12px 0;
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      height: 48px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 0 16px 0 44px;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      color: #f0f2f4;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      min-height: 44px;
+    }
+    .search-input::placeholder {
+      color: rgba(255,255,255,0.25);
+    }
+    .search-input:focus {
+      border-color: rgba(43, 127, 255, 0.3);
+      background: rgba(255,255,255,0.07);
+    }
+    .search-wrap i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.2);
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    /* ----- CHIPS ----- */
+    .chips-wrap {
+      padding: 8px 0 16px 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      display: flex;
+      gap: 8px;
+      flex-wrap: nowrap;
+    }
+    .chips-wrap::-webkit-scrollbar { display: none; }
+    .chip {
+      flex-shrink: 0;
+      padding: 8px 18px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.4);
+      border: 1px solid rgba(255,255,255,0.04);
+      cursor: pointer;
+      transition: all 0.2s;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .chip:hover { background: rgba(255,255,255,0.07); }
+    .chip.active {
+      background: rgba(43, 127, 255, 0.15);
+      color: #8bbaff;
+      border-color: rgba(43, 127, 255, 0.2);
+    }
+
+    /* ----- SECTION HEADER ----- */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 16px 0 12px 0;
+    }
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #f0f2f4;
+      letter-spacing: -0.3px;
+    }
+    .section-action {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.3);
+      cursor: pointer;
+      transition: color 0.2s;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+    }
+    .section-action:hover { color: rgba(255,255,255,0.5); }
+    .sort-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sort-select {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      color: rgba(255,255,255,0.5);
+      outline: none;
+      cursor: pointer;
+      min-height: 32px;
+      background-color: transparent;
+    }
+    .sort-select option { background: #1a1c1e; color: #f0f2f4; }
+
+    /* ----- CARD GRID ----- */
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      padding-bottom: 8px;
+    }
+    @media (min-width: 480px) {
+      .card-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ----- SAVED CARD ----- */
+    .saved-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.2s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+    .saved-card:active { transform: scale(0.98); }
+    .saved-card-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: rgba(255,255,255,0.02);
+      position: relative;
+      overflow: hidden;
+    }
+    .saved-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .saved-card-img .bookmark {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.4);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-width: 36px;
+      min-height: 36px;
+    }
+    .saved-card-img .bookmark:hover {
+      background: rgba(0,0,0,0.7);
+      color: #ffd700;
+    }
+    .saved-card-img .bookmark.active { color: #ffd700; }
+    .saved-card-body {
+      padding: 14px 16px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .saved-card-category {
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.25);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .saved-card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #f0f2f4;
+      line-height: 1.3;
+    }
+    .saved-card-price {
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+    }
+    .saved-card-note {
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.3);
+      line-height: 1.4;
+      margin-top: 2px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .saved-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.03);
+    }
+    .saved-card-date {
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
+    }
+    .saved-card-priority {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .saved-card-priority.high {
+      color: #ff6b6b;
+      background: rgba(255,107,107,0.08);
+    }
+    .saved-card-priority.medium {
+      color: #ffd93d;
+      background: rgba(255,217,61,0.08);
+    }
+    .saved-card-priority.low {
+      color: rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.03);
+    }
+
+    /* ----- RECENTLY ADDED ----- */
+    .recent-section {
+      padding: 16px 0 8px 0;
+    }
+    .recent-list {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 4px 0 8px 0;
+    }
+    .recent-list::-webkit-scrollbar { display: none; }
+    .recent-item {
+      flex-shrink: 0;
+      width: 140px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .recent-item:active { transform: scale(0.97); }
+    .recent-item img {
+      width: 100%;
+      height: 90px;
+      object-fit: cover;
+      display: block;
+    }
+    .recent-item-body {
+      padding: 10px 12px 12px 12px;
+    }
+    .recent-item-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #f0f2f4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .recent-item-category {
+      font-size: 10px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.25);
+      margin-top: 2px;
+    }
+
+    /* ----- EMPTY / NO RESULTS ----- */
+    .empty-state, .no-results {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    .empty-state.visible, .no-results.visible { display: flex; }
+    .empty-state-icon {
+      font-size: 48px;
+      color: rgba(255,255,255,0.06);
+      margin-bottom: 16px;
+    }
+    .empty-state-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.4);
+    }
+    .empty-state-desc {
+      font-size: 15px;
+      color: rgba(255,255,255,0.2);
+      margin-top: 8px;
+      max-width: 280px;
+    }
+    .empty-state-btn {
+      margin-top: 24px;
+      padding: 12px 32px;
+      border-radius: 100px;
+      background: #2b7fff;
+      border: none;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .empty-state-btn:active { transform: scale(0.96); }
+    .no-results-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.3);
+    }
+    .no-results-desc {
+      font-size: 14px;
+      color: rgba(255,255,255,0.15);
+      margin-top: 4px;
+    }
+
+    /* ----- MODAL ----- */
+    .modal-overlay {
       position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
       bottom: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 200;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.visible { display: flex; }
+    .modal-content {
+      width: 100%;
+      max-width: 440px;
+      max-height: 90vh;
+      background: #141618;
+      border-radius: 28px;
+      border: 1px solid rgba(255,255,255,0.04);
+      overflow-y: auto;
+      padding: 0 0 20px 0;
+      animation: modalIn 0.25s ease;
+      position: relative;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-content img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      border-radius: 28px 28px 0 0;
+    }
+    .modal-body { padding: 20px 24px; }
+    .modal-body .modal-category {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .modal-body .modal-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #f0f2f4;
+      margin-top: 4px;
+    }
+    .modal-body .modal-price {
+      font-size: 18px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      margin-top: 4px;
+    }
+    .modal-body .modal-note {
+      font-size: 15px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.4);
+      margin-top: 12px;
+      line-height: 1.5;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      border-left: 2px solid rgba(43,127,255,0.2);
+    }
+    .modal-body .modal-meta {
+      display: flex;
+      gap: 16px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .modal-body .modal-meta span {
+      font-size: 13px;
+      color: rgba(255,255,255,0.25);
+    }
+    .modal-body .modal-meta strong {
+      color: rgba(255,255,255,0.5);
+      font-weight: 500;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      flex-wrap: wrap;
+    }
+    .modal-actions button {
+      flex: 1;
+      min-height: 48px;
+      padding: 0 16px;
+      border-radius: 14px;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.15s;
+      min-width: 60px;
+    }
+    .modal-actions button:active { transform: scale(0.96); }
+    .modal-actions .btn-primary { background: #2b7fff; color: white; }
+    .modal-actions .btn-secondary {
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.5);
+    }
+    .modal-actions .btn-danger {
+      background: rgba(255,107,107,0.1);
+      color: #ff6b6b;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.6);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 40px;
+      min-height: 40px;
+    }
+
+    /* ----- ADD FORM ----- */
+    .add-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 8px 0 20px 0;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .form-group label {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.2px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      color: #f0f2f4;
+      outline: none;
+      transition: border-color 0.2s;
+      min-height: 48px;
+    }
+    .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: rgba(43,127,255,0.3);
+      background: rgba(255,255,255,0.06);
+    }
+    .form-group select option { background: #1a1c1e; color: #f0f2f4; }
+    .form-group .image-upload {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .form-group .image-upload .preview {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .form-group .image-upload .upload-btn {
+      padding: 10px 20px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.5);
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background 0.2s;
+      min-height: 44px;
+    }
+    .form-group .image-upload .upload-btn:hover { background: rgba(255,255,255,0.08); }
+    .btn-save {
+      width: 100%;
+      padding: 16px;
+      border-radius: 16px;
+      background: #2b7fff;
+      border: none;
+      color: white;
+      font-size: 17px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+      min-height: 56px;
+      margin-top: 8px;
+    }
+    .btn-save:active { transform: scale(0.97); }
+    .link-import-wrap {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .link-import-wrap input { flex: 1; }
+    .link-import-wrap button {
+      padding: 0 20px;
+      min-height: 48px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.5);
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .success-state {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .success-state.visible { display: flex; }
+    .success-state .check {
+      font-size: 64px;
+      color: #2b7fff;
+      margin-bottom: 16px;
+    }
+    .success-state h3 {
+      font-size: 22px;
+      font-weight: 600;
+      color: #f0f2f4;
+    }
+    .success-state p {
+      color: rgba(255,255,255,0.4);
+      margin-top: 8px;
+    }
+    .success-state .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .success-state .actions button {
+      padding: 12px 24px;
+      border-radius: 14px;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      min-height: 48px;
+    }
+    .success-state .actions .btn-view { background: #2b7fff; color: white; }
+    .success-state .actions .btn-another {
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* ----- COLLECTIONS ----- */
+    .collection-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      padding-bottom: 12px;
+    }
+    .collection-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 18px;
+      padding: 16px;
+      cursor: pointer;
+      transition: transform 0.15s;
+      text-align: center;
+    }
+    .collection-card:active { transform: scale(0.97); }
+    .collection-card .icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    .collection-card .name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #f0f2f4;
+    }
+    .collection-card .count {
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      margin-top: 2px;
+    }
+    .collection-card .preview-images {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      margin-top: 8px;
+    }
+    .collection-card .preview-images img {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      object-fit: cover;
+    }
+    .create-collection-btn {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px dashed rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.3);
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background 0.2s;
+      min-height: 56px;
+    }
+    .create-collection-btn:hover { background: rgba(255,255,255,0.05); }
+
+    /* ----- SETTINGS ----- */
+    .settings-group { padding: 8px 0 20px 0; }
+    .settings-group-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 16px 0 8px 0;
+    }
+    .settings-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      cursor: pointer;
+      min-height: 56px;
+    }
+    .settings-item .left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .settings-item .left i {
+      width: 20px;
+      color: rgba(255,255,255,0.2);
+      font-size: 16px;
+    }
+    .settings-item .left span {
+      font-size: 15px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.7);
+    }
+    .settings-item .right {
+      color: rgba(255,255,255,0.2);
+      font-size: 14px;
+    }
+    .settings-item.danger .left span { color: #ff6b6b; }
+    .settings-item.danger .left i { color: #ff6b6b; }
+    .settings-item .toggle {
+      width: 44px;
+      height: 26px;
+      border-radius: 13px;
+      background: rgba(255,255,255,0.08);
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      position: relative;
+    }
+    .settings-item .toggle.on { background: #2b7fff; }
+    .settings-item .toggle::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: white;
+      transition: transform 0.2s;
+    }
+    .settings-item .toggle.on::after { transform: translateX(18px); }
+
+    /* ----- PROFILE ----- */
+    .profile-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0 24px 0;
+      text-align: center;
+    }
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      border: 2px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      color: rgba(255,255,255,0.2);
+      margin-bottom: 12px;
+    }
+    .profile-name {
+      font-size: 22px;
+      font-weight: 600;
+      color: #f0f2f4;
+    }
+    .profile-email {
+      font-size: 14px;
+      color: rgba(255,255,255,0.3);
+      margin-top: 4px;
+    }
+    .profile-stats {
+      display: flex;
+      gap: 32px;
+      margin-top: 16px;
+    }
+    .profile-stats div { text-align: center; }
+    .profile-stats .num {
+      font-size: 20px;
+      font-weight: 600;
+      color: #f0f2f4;
+    }
+    .profile-stats .label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      margin-top: 2px;
+    }
+
+    /* ----- BOTTOM NAVIGATION (floating) ----- */
+    .bottom-nav-float {
+      position: fixed;
+      bottom: 18px;
       left: 0;
       right: 0;
       width: 100%;
       max-width: 480px;
       margin: 0 auto;
-      background: rgba(14, 16, 18, 0.88);
-      backdrop-filter: saturate(180%) blur(20px);
-      -webkit-backdrop-filter: saturate(180%) blur(20px);
-      border-radius: 28px 28px 0 0;
-      box-shadow: 0 -4px 24px rgba(0,0,0,0.5), 0 -1px 4px rgba(0,0,0,0.3);
-      padding: 8px 12px 0 12px;
-      padding-bottom: 0;
+      padding: 0 16px;
       z-index: 100;
-      border: 1px solid rgba(255, 255, 255, 0.03);
-      border-bottom: none;
-      will-change: transform;
+      pointer-events: none;
     }
-
-    /* safe-area container: background extends to bottom, content respects inset */
-    .nav-safe-area {
-      padding-bottom: env(safe-area-inset-bottom, 12px);
-      background: transparent;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
+    .nav-pill {
+      background: rgba(18, 20, 22, 0.92);
+      backdrop-filter: saturate(180%) blur(22px);
+      -webkit-backdrop-filter: saturate(180%) blur(22px);
+      border-radius: 28px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 6px 10px;
+      pointer-events: auto;
       width: 100%;
+      transition: transform 0.15s ease;
     }
-
     .nav-inner {
       display: flex;
       align-items: flex-end;
-      justify-content: space-around;
+      justify-content: center;
       position: relative;
       width: 100%;
       max-width: 420px;
       margin: 0 auto;
-      padding-top: 6px;
+      padding-top: 2px;
+      gap: 0;
     }
-
-    /* ---- each nav item ---- */
     .nav-item {
       display: flex;
       flex-direction: column;
@@ -117,18 +1067,17 @@
       border: none;
       outline: none;
       padding: 4px 0 2px 0;
-      min-width: 48px;
-      flex: 1;
+      flex: 1 1 0;
+      min-width: 44px;
+      min-height: 44px;
       position: relative;
       cursor: pointer;
       transition: all 0.12s ease;
       -webkit-touch-callout: none;
       touch-action: manipulation;
       border-radius: 30px;
-      min-height: 44px;
       padding-bottom: 4px;
     }
-
     .nav-item .icon-wrap {
       display: flex;
       align-items: center;
@@ -138,32 +1087,35 @@
       border-radius: 30px;
       transition: all 0.18s cubic-bezier(0.2, 0, 0, 1);
       position: relative;
+      flex-shrink: 0;
     }
-
     .nav-item i {
       font-size: 21px;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: #6d7278;
       transition: color 0.2s, transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
-      display: block;
       line-height: 1;
-      width: 24px;
       text-align: center;
       opacity: 0.7;
+      flex-shrink: 0;
     }
-
     .nav-item .label {
       font-size: 10px;
       font-weight: 500;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.1px;
       color: #6d7278;
-      margin-top: 3px;
+      margin-top: 4px;
       transition: color 0.2s, opacity 0.2s;
-      line-height: 1.2;
+      line-height: 12px;
       opacity: 0.7;
       font-family: 'Inter', -apple-system, sans-serif;
+      text-align: center;
+      white-space: nowrap;
     }
-
-    /* active state (for home, explore, collections, profile) – NO DOT */
     .nav-item.active i {
       color: #eef0f2;
       opacity: 1;
@@ -173,332 +1125,1219 @@
       opacity: 1;
       font-weight: 500;
     }
-
-    /* press feedback for all items */
-    .nav-item:active:not(.add-btn) .icon-wrap {
-      transform: scale(0.92);
-    }
-    .nav-item:active .icon-wrap i {
-      transform: scale(0.90);
-    }
-    .nav-item.active:active .icon-wrap {
-      transform: scale(0.94);
-    }
-
-    /* ===== CENTER ADD BUTTON (balanced, floating) ===== */
+    .nav-item:active:not(.add-btn) .icon-wrap { transform: scale(0.94); }
+    .nav-item:active .icon-wrap i { transform: scale(0.92); }
+    .nav-item.active:active .icon-wrap { transform: scale(0.94); }
     .nav-item.add-btn {
       flex: 0 0 auto;
-      margin-top: -12px;  /* overlap, but not too much */
+      margin-top: -10px;
       position: relative;
       z-index: 10;
       min-width: 56px;
+      min-height: 56px;
       padding-bottom: 0;
       background: transparent;
       border: none;
     }
-
     .nav-item.add-btn .icon-wrap {
-      width: 56px;
-      height: 56px;
+      width: 54px;
+      height: 54px;
       background: #2b7fff;
       background: linear-gradient(145deg, #3f8aff, #1a6aff);
-      box-shadow: 0 6px 20px rgba(27, 94, 255, 0.35), 0 2px 8px rgba(0,0,0,0.25);
+      box-shadow: 0 6px 18px rgba(27, 94, 255, 0.3), 0 2px 8px rgba(0,0,0,0.2);
       border-radius: 50%;
       transition: all 0.18s cubic-bezier(0.2, 0, 0, 1);
       display: flex;
       align-items: center;
       justify-content: center;
       border: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
     }
-
     .nav-item.add-btn i {
-      font-size: 28px;
+      font-size: 26px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: white;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
-      width: 30px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
       opacity: 1;
       transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      line-height: 1;
     }
-
     .nav-item.add-btn .label {
       margin-top: 4px;
       color: #aab0b6;
       font-weight: 500;
-      letter-spacing: 0.2px;
+      letter-spacing: 0.1px;
       opacity: 0.8;
       font-size: 10px;
     }
-
     .nav-item.add-btn:active .icon-wrap {
       transform: scale(0.92);
-      box-shadow: 0 4px 16px rgba(27, 94, 255, 0.5);
+      box-shadow: 0 4px 14px rgba(27, 94, 255, 0.5);
     }
-    .nav-item.add-btn:active i {
-      transform: scale(0.88);
+    .nav-item.add-btn:active i { transform: scale(0.88); }
+    .bottom-nav-float {
+      bottom: calc(18px + env(safe-area-inset-bottom, 0px));
     }
-
-    /* active state for add? we keep it subtle, but we don't want dot */
-    .nav-item.add-btn.active i {
-      color: white;
-      opacity: 1;
-    }
-    .nav-item.add-btn.active .label {
-      color: #eaeef0;
-      opacity: 1;
-    }
-    /* but we never set add as active via navigation, only via click? we'll keep it clean */
-
-    /* --- top separation (soft) --- */
-    .bottom-nav::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 20px;
-      right: 20px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05) 20%, rgba(255,255,255,0.05) 80%, transparent);
+    @supports (padding-bottom: env(safe-area-inset-bottom)) {
+      .bottom-nav-float { bottom: calc(18px + env(safe-area-inset-bottom, 0px)); }
     }
 
-    /* safe area: extend background to bottom, content inside respects it */
-    .bottom-nav {
-      padding-bottom: 0;
-    }
-    .nav-safe-area {
-      padding-bottom: env(safe-area-inset-bottom, 12px);
-    }
-
-    /* small screens adjustments */
+    /* ----- RESPONSIVE ----- */
     @media (max-width: 400px) {
-      .nav-item i {
-        font-size: 19px;
-      }
-      .nav-item .label {
-        font-size: 9px;
-        letter-spacing: 0.2px;
-      }
-      .nav-item.add-btn .icon-wrap {
-        width: 50px;
-        height: 50px;
-      }
-      .nav-item.add-btn i {
-        font-size: 24px;
-      }
-      .nav-item.add-btn {
-        margin-top: -10px;
-      }
-      .nav-inner {
-        max-width: 100%;
-      }
+      .app-shell { padding: 0 16px 110px 16px; }
+      .header-home-left .brand-name { font-size: 18px; }
+      .header-home-left .brand-logo { width: 28px; height: 28px; }
+      .header-home-left .brand-logo svg { width: 28px; height: 28px; }
+      .header-secondary-center { font-size: 16px; }
+      .page-title { font-size: 24px; }
+      .bottom-nav-float { bottom: 14px; padding: 0 12px; }
+      .nav-pill { padding: 4px 8px; border-radius: 24px; }
+      .nav-item { min-height: 44px; padding: 2px 0 2px 0; }
+      .nav-item i { font-size: 19px; width: 22px; height: 22px; }
+      .nav-item .label { font-size: 10px; letter-spacing: 0.1px; margin-top: 3px; line-height: 12px; }
+      .nav-item.add-btn { min-width: 50px; min-height: 50px; margin-top: -8px; }
+      .nav-item.add-btn .icon-wrap { width: 50px; height: 50px; }
+      .nav-item.add-btn i { font-size: 24px; width: 26px; height: 26px; }
+      .nav-inner { max-width: 100%; padding-top: 0; }
+      .collection-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .app-header { padding: 10px 16px; margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
     }
-
     @media (max-width: 360px) {
-      .nav-item.add-btn .icon-wrap {
-        width: 46px;
-        height: 46px;
-      }
-      .nav-item.add-btn i {
-        font-size: 22px;
-      }
-      .nav-item.add-btn {
-        margin-top: -8px;
-      }
-      .nav-item .label {
-        font-size: 8px;
-      }
+      .app-shell { padding: 0 12px 100px 12px; }
+      .header-home-left .brand-name { font-size: 16px; }
+      .header-home-left .brand-logo { width: 26px; height: 26px; }
+      .header-home-left .brand-logo svg { width: 26px; height: 26px; }
+      .header-secondary-center { font-size: 15px; }
+      .page-title { font-size: 22px; }
+      .bottom-nav-float { bottom: 12px; padding: 0 10px; }
+      .nav-pill { padding: 4px 6px; border-radius: 22px; }
+      .nav-item i { font-size: 18px; width: 20px; height: 20px; }
+      .nav-item .label { font-size: 10px; margin-top: 3px; letter-spacing: 0.05px; line-height: 12px; }
+      .nav-item.add-btn { min-width: 46px; min-height: 46px; margin-top: -6px; }
+      .nav-item.add-btn .icon-wrap { width: 46px; height: 46px; }
+      .nav-item.add-btn i { font-size: 22px; width: 24px; height: 24px; }
+      .app-header { padding: 8px 12px; margin: 0 -12px; padding-left: 12px; padding-right: 12px; }
     }
-
     @media (min-width: 600px) {
-      .bottom-nav {
-        border-radius: 32px 32px 0 0;
-      }
+      .bottom-nav-float { max-width: 480px; }
+      .nav-pill { border-radius: 32px; padding: 8px 14px; }
     }
-
-    /* content bottom padding to avoid overlap */
-    .app-content {
-      padding-bottom: calc(80px + env(safe-area-inset-bottom, 16px));
-    }
-
-    /* accessibility: larger tap target */
-    .nav-item {
-      min-height: 44px;
-    }
-
-    button.nav-item {
-      background: none;
-      border: none;
-      font-family: inherit;
-      cursor: pointer;
-    }
-
-    /* demo watermark */
-    .demo-note {
-      position: fixed;
-      top: 20px;
-      left: 0;
-      right: 0;
-      text-align: center;
-      color: rgba(255,255,255,0.12);
-      font-size: 12px;
-      font-weight: 400;
-      letter-spacing: 0.6px;
-      pointer-events: none;
-      z-index: 0;
-    }
+    .app-shell { padding-bottom: calc(120px + env(safe-area-inset-bottom, 16px)); }
   </style>
 </head>
 <body>
 
-  <!-- content area -->
-  <div class="app-content">
-    <span>📌 save anything · remember later</span>
-    <small>content flows above the navigation</small>
+  <!-- ===== APP SHELL ===== -->
+  <div class="app-shell" id="appShell">
+
+    <!-- ===== HEADER: HOME (branded) ===== -->
+    <header class="app-header" id="headerHome">
+      <div class="app-header-inner">
+        <div class="header-home-left">
+          <div class="brand-logo" aria-label="Savmo logo">
+            <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="30" height="30" rx="8" fill="#2b7fff" />
+              <path d="M10 12L17 19L24 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M10 19L10 12L24 12L24 19" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M13 22L21 22" stroke="white" stroke-width="2.5" stroke-linecap="round" />
+              <path d="M13 25L19 25" stroke="white" stroke-width="2.5" stroke-linecap="round" />
+              <rect x="2" y="2" width="30" height="30" rx="8" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+            </svg>
+          </div>
+          <span class="brand-name">Savmo</span>
+        </div>
+        <div class="header-home-right">
+          <button class="header-icon-btn" id="notifBtnHome" aria-label="Notifications">
+            <i class="fas fa-bell"></i>
+          </button>
+          <button class="header-icon-btn" id="profileBtnHome" aria-label="Profile">
+            <i class="fas fa-user"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== HEADER: SECONDARY (back + title + notif) ===== -->
+    <header class="app-header" id="headerSecondary" style="display:none;">
+      <div class="app-header-inner">
+        <div class="header-secondary-left">
+          <button class="back-btn" id="backBtn" aria-label="Go back">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+        </div>
+        <span class="header-secondary-center" id="secondaryPageTitle">Explore</span>
+        <div class="header-secondary-right">
+          <button class="header-icon-btn" id="notifBtnSecondary" aria-label="Notifications">
+            <i class="fas fa-bell"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== PAGE: HOME ===== -->
+    <div class="page active" id="pageHome">
+      <div class="greeting-block">
+        <div class="greeting-text" id="greeting">Good morning</div>
+        <h1 class="page-title">Your saved things</h1>
+      </div>
+      <div class="hero">
+        <p class="page-subtitle">Keep the things you don't want to forget.</p>
+        <p class="hero-stat" id="itemCount">0 things saved</p>
+      </div>
+      <div class="search-wrap">
+        <i class="fas fa-search"></i>
+        <input class="search-input" id="homeSearch" type="text" placeholder="Search your saved things" />
+      </div>
+      <div class="chips-wrap" id="homeChips"></div>
+      <div class="section-header">
+        <h2 class="section-title">Saved for later</h2>
+        <div class="sort-wrap">
+          <select class="sort-select" id="homeSort">
+            <option value="recent">Recently saved</option>
+            <option value="oldest">Oldest</option>
+            <option value="price-low">Price: Low → High</option>
+            <option value="price-high">Price: High → Low</option>
+            <option value="priority">Priority</option>
+          </select>
+        </div>
+      </div>
+      <div class="card-grid" id="homeGrid"></div>
+      <div class="no-results" id="homeNoResults">
+        <div class="no-results-title">No saved things found</div>
+        <div class="no-results-desc">Try another search</div>
+      </div>
+      <div class="empty-state" id="homeEmpty">
+        <div class="empty-state-icon"><i class="fas fa-box-open"></i></div>
+        <div class="empty-state-title">Nothing saved yet</div>
+        <div class="empty-state-desc">See something you want to remember? Save it here.</div>
+        <button class="empty-state-btn" id="homeEmptyAdd"><i class="fas fa-plus"></i> Save something</button>
+      </div>
+      <div class="recent-section">
+        <div class="section-header">
+          <h2 class="section-title">Recently added</h2>
+        </div>
+        <div class="recent-list" id="homeRecent"></div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: EXPLORE ===== -->
+    <div class="page" id="pageExplore">
+      <div style="padding-top:8px;"></div>
+      <p class="page-subtitle" style="margin-bottom:4px;">Discover things worth saving.</p>
+      <div class="search-wrap" style="padding-top:8px;">
+        <i class="fas fa-search"></i>
+        <input class="search-input" id="exploreSearch" type="text" placeholder="Search things to save..." />
+      </div>
+      <div style="padding:16px 0 8px 0;">
+        <h3 style="font-size:16px;font-weight:600;color:rgba(255,255,255,0.5);margin-bottom:12px;">Trending</h3>
+        <div class="card-grid" id="exploreGrid"></div>
+      </div>
+      <div style="padding:8px 0;">
+        <h3 style="font-size:16px;font-weight:600;color:rgba(255,255,255,0.5);margin-bottom:12px;">Popular Categories</h3>
+        <div class="chips-wrap" id="exploreChips" style="padding-bottom:8px;"></div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: ADD ===== -->
+    <div class="page" id="pageAdd">
+      <div style="padding-top:8px;"></div>
+      <p class="page-subtitle" style="margin-bottom:8px;">Keep it for later.</p>
+      <div class="add-form" id="addForm">
+        <div class="form-group">
+          <label>Image</label>
+          <div class="image-upload">
+            <img class="preview" id="addImagePreview" src="" alt="Preview" style="display:none;" />
+            <button class="upload-btn" id="addImageBtn"><i class="fas fa-image"></i> Upload image</button>
+            <input type="file" id="addImageInput" accept="image/*" style="display:none;" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Title *</label>
+          <input type="text" id="addTitle" placeholder="What are you saving?" />
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="addCategory">
+            <option value="Cars">Cars</option>
+            <option value="Tech">Tech</option>
+            <option value="Fashion">Fashion</option>
+            <option value="Movies">Movies</option>
+            <option value="Gaming">Gaming</option>
+            <option value="Travel">Travel</option>
+            <option value="House">House</option>
+            <option value="Gift Ideas">Gift Ideas</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Price / Status</label>
+          <input type="text" id="addPrice" placeholder="$0 or Watch / Plan / Own" />
+        </div>
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea id="addNote" placeholder="Why are you saving this?"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Original URL</label>
+          <div class="link-import-wrap">
+            <input type="url" id="addUrl" placeholder="https://..." />
+            <button id="addImportLink">Import</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Priority</label>
+          <select id="addPriority">
+            <option value="Low">Low</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+        <button class="btn-save" id="addSaveBtn">Save to Savmo</button>
+      </div>
+      <div class="success-state" id="addSuccess">
+        <div class="check"><i class="fas fa-check-circle"></i></div>
+        <h3>Saved!</h3>
+        <p>Your item has been saved to Savmo.</p>
+        <div class="actions">
+          <button class="btn-view" id="addViewItem">View item</button>
+          <button class="btn-another" id="addAnother">Add another</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: COLLECTIONS ===== -->
+    <div class="page" id="pageCollections">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;padding-bottom:4px;">
+        <div style="flex:1;"></div>
+        <button class="create-collection-btn" id="createCollectionBtn" style="width:auto;padding:8px 16px;border-radius:100px;min-height:40px;margin:0;border-style:solid;"><i class="fas fa-plus"></i> New</button>
+      </div>
+      <p class="page-subtitle" style="margin-bottom:12px;">Organize your saved things.</p>
+      <div class="collection-grid" id="collectionGrid"></div>
+      <div class="empty-state" id="collectionEmpty" style="padding:40px 20px;">
+        <div class="empty-state-icon"><i class="fas fa-layer-group"></i></div>
+        <div class="empty-state-title">No collections yet</div>
+        <div class="empty-state-desc">Create your first collection to organize your saved items.</div>
+        <button class="empty-state-btn" id="collectionEmptyBtn"><i class="fas fa-plus"></i> Create collection</button>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: SETTINGS ===== -->
+    <div class="page" id="pageSettings">
+      <div style="padding-top:8px;"></div>
+      <div class="settings-group">
+        <div class="settings-group-title">Account</div>
+        <div class="settings-item" id="settingsProfile">
+          <div class="left"><i class="fas fa-user"></i><span>Profile</span></div>
+          <div class="right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <div class="settings-item">
+          <div class="left"><i class="fas fa-sign-in-alt"></i><span>Sign in / Sign out</span></div>
+          <div class="right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <div class="settings-item">
+          <div class="left"><i class="fas fa-sync"></i><span>Sync status</span></div>
+          <div class="right" style="color:rgba(255,255,255,0.3);font-size:12px;">Local</div>
+        </div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-group-title">Appearance</div>
+        <div class="settings-item">
+          <div class="left"><i class="fas fa-moon"></i><span>Dark mode</span></div>
+          <button class="toggle on" id="darkModeToggle"></button>
+        </div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-group-title">Notifications</div>
+        <div class="settings-item">
+          <div class="left"><i class="fas fa-bell"></i><span>Reminders</span></div>
+          <button class="toggle" id="reminderToggle"></button>
+        </div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-group-title">Data</div>
+        <div class="settings-item">
+          <div class="left"><i class="fas fa-download"></i><span>Export data</span></div>
+          <div class="right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <div class="settings-item">
+          <div class="left"><i class="fas fa-upload"></i><span>Import data</span></div>
+          <div class="right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-group-title">App</div>
+        <div class="settings-item">
+          <div class="left"><i class="fas fa-info-circle"></i><span>About Savmo</span></div>
+          <div class="right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <div class="settings-item">
+          <div class="left"><i class="fas fa-shield-alt"></i><span>Privacy</span></div>
+          <div class="right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <div class="settings-item">
+          <div class="left"><i class="fas fa-file-contract"></i><span>Terms</span></div>
+          <div class="right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <div class="settings-item">
+          <div class="left"><i class="fas fa-question-circle"></i><span>Help</span></div>
+          <div class="right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-group-title" style="color:#ff6b6b;">Danger Zone</div>
+        <div class="settings-item danger">
+          <div class="left"><i class="fas fa-trash"></i><span>Clear saved data</span></div>
+          <div class="right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <div class="settings-item danger">
+          <div class="left"><i class="fas fa-undo-alt"></i><span>Reset app</span></div>
+          <div class="right"><i class="fas fa-chevron-right"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: PROFILE (in-header) ===== -->
+    <div class="page" id="pageProfile">
+      <div style="padding-top:8px;"></div>
+      <div class="profile-header">
+        <div class="profile-avatar"><i class="fas fa-user"></i></div>
+        <div class="profile-name">Savmo User</div>
+        <div class="profile-email">user@savmo.app</div>
+        <div class="profile-stats">
+          <div><div class="num" id="profileItemCount">0</div><div class="label">Saved</div></div>
+          <div><div class="num" id="profileCollectionCount">0</div><div class="label">Collections</div></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;padding:8px 0 20px 0;">
+        <button style="padding:14px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.04);color:rgba(255,255,255,0.5);font-family:'Inter',sans-serif;font-size:15px;cursor:pointer;min-height:48px;"><i class="fas fa-edit"></i> Edit profile</button>
+        <button style="padding:14px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.04);color:#ff6b6b;font-family:'Inter',sans-serif;font-size:15px;cursor:pointer;min-height:48px;"><i class="fas fa-sign-out-alt"></i> Sign out</button>
+      </div>
+    </div>
+
+    <!-- ===== PAGE: NOTIFICATIONS ===== -->
+    <div class="page" id="pageNotifications">
+      <div style="padding-top:8px;"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;">
+        <div style="font-size:48px;color:rgba(255,255,255,0.06);margin-bottom:16px;"><i class="fas fa-bell-slash"></i></div>
+        <div style="font-size:22px;font-weight:600;color:rgba(255,255,255,0.3);">No notifications</div>
+        <div style="font-size:15px;color:rgba(255,255,255,0.15);margin-top:8px;max-width:280px;">You're all caught up. Check back later for updates.</div>
+      </div>
+    </div>
+
   </div>
-  <div class="demo-note">premium · minimal · native</div>
+
+  <!-- ===== DETAIL MODAL ===== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+      <img id="modalImage" src="" alt="" />
+      <div class="modal-body">
+        <div class="modal-category" id="modalCategory"></div>
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-price" id="modalPrice"></div>
+        <div class="modal-note" id="modalNote"></div>
+        <div class="modal-meta">
+          <span><strong>Priority:</strong> <span id="modalPriority"></span></span>
+          <span><strong>Saved:</strong> <span id="modalDate"></span></span>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-primary" id="modalOpenLink"><i class="fas fa-external-link-alt"></i> Open</button>
+          <button class="btn-secondary" id="modalEdit"><i class="fas fa-edit"></i> Edit</button>
+          <button class="btn-danger" id="modalDelete"><i class="fas fa-trash"></i> Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ===== BOTTOM NAVIGATION ===== -->
-  <nav class="bottom-nav" role="navigation" aria-label="Main navigation">
-    <div class="nav-safe-area">
+  <div class="bottom-nav-float" role="navigation" aria-label="Main navigation">
+    <div class="nav-pill">
       <div class="nav-inner">
-
-        <!-- 1. Home -->
-        <button class="nav-item active" data-tab="home" aria-current="page" aria-label="Home">
+        <button class="nav-item active" data-page="pageHome" aria-label="Home">
           <span class="icon-wrap"><i class="fas fa-house"></i></span>
           <span class="label">Home</span>
         </button>
-
-        <!-- 2. Explore -->
-        <button class="nav-item" data-tab="explore" aria-label="Explore">
+        <button class="nav-item" data-page="pageExplore" aria-label="Explore">
           <span class="icon-wrap"><i class="fas fa-compass"></i></span>
           <span class="label">Explore</span>
         </button>
-
-        <!-- 3. Add (primary action) – balanced floating -->
-        <button class="nav-item add-btn" data-tab="add" aria-label="Save anything">
+        <button class="nav-item add-btn" data-page="pageAdd" aria-label="Add" id="navAddBtn">
           <span class="icon-wrap"><i class="fas fa-plus"></i></span>
           <span class="label">Add</span>
         </button>
-
-        <!-- 4. Collections -->
-        <button class="nav-item" data-tab="collections" aria-label="Collections">
+        <button class="nav-item" data-page="pageCollections" aria-label="Collections">
           <span class="icon-wrap"><i class="fas fa-folder"></i></span>
           <span class="label">Collections</span>
         </button>
-
-        <!-- 5. Profile -->
-        <button class="nav-item" data-tab="profile" aria-label="Profile">
-          <span class="icon-wrap"><i class="fas fa-user"></i></span>
-          <span class="label">Profile</span>
+        <button class="nav-item" data-page="pageSettings" aria-label="Settings">
+          <span class="icon-wrap"><i class="fas fa-cog"></i></span>
+          <span class="label">Settings</span>
         </button>
-
       </div>
     </div>
-  </nav>
+  </div>
 
   <script>
     (function() {
-      const nav = document.querySelector('.bottom-nav');
-      const items = nav.querySelectorAll('.nav-item');
-      let activeTab = 'home';
-      let previousActive = 'home'; // to restore after add action
+      'use strict';
 
-      function setActiveTab(tabId, targetItem) {
-        items.forEach(item => {
-          item.classList.remove('active');
-          item.removeAttribute('aria-current');
-        });
+      // ----- INITIAL DEMO DATA -----
+      const defaultItems = [{
+        id: 1,
+        title: '2025 Porsche 911 Carrera',
+        category: 'Cars',
+        price: '$128,000',
+        note: 'Dream car — check again when prices change.',
+        priority: 'High',
+        date: 'Saved 2 days ago',
+        image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=600&h=450&fit=crop&auto=format',
+        alt: 'Porsche 911 Carrera',
+        url: 'https://porsche.com',
+        bookmarked: false
+      }, {
+        id: 2,
+        title: 'MacBook Pro 14-inch',
+        category: 'Tech',
+        price: '$1,599',
+        note: 'Consider upgrading when current laptop starts slowing down.',
+        priority: 'Medium',
+        date: 'Saved 4 days ago',
+        image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&h=450&fit=crop&auto=format',
+        alt: 'MacBook Pro',
+        url: 'https://apple.com',
+        bookmarked: false
+      }, {
+        id: 3,
+        title: 'Nike Air Max',
+        category: 'Fashion',
+        price: '$180',
+        note: 'Like the black colorway.',
+        priority: 'Medium',
+        date: 'Saved 1 week ago',
+        image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&h=450&fit=crop&auto=format',
+        alt: 'Nike Air Max shoes',
+        url: 'https://nike.com',
+        bookmarked: false
+      }, {
+        id: 4,
+        title: 'Interstellar',
+        category: 'Movies',
+        price: 'Watch',
+        note: 'Want to watch this again.',
+        priority: 'Low',
+        date: 'Saved 1 week ago',
+        image: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=600&h=450&fit=crop&auto=format',
+        alt: 'Movie poster',
+        url: 'https://imdb.com',
+        bookmarked: false
+      }, {
+        id: 5,
+        title: 'Mechanical Keyboard',
+        category: 'Tech',
+        price: '$149',
+        note: 'Look for a quieter switch option.',
+        priority: 'Medium',
+        date: 'Saved 2 weeks ago',
+        image: 'https://images.unsplash.com/photo-1618384887929-78b6e6d2a5d1?w=600&h=450&fit=crop&auto=format',
+        alt: 'Mechanical keyboard',
+        url: 'https://keychron.com',
+        bookmarked: false
+      }, {
+        id: 6,
+        title: 'Modern Hillside House',
+        category: 'House',
+        price: '$1.2M',
+        note: 'Love the architecture and large windows.',
+        priority: 'High',
+        date: 'Saved 2 weeks ago',
+        image: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=600&h=450&fit=crop&auto=format',
+        alt: 'Modern house',
+        url: 'https://zillow.com',
+        bookmarked: false
+      }, {
+        id: 7,
+        title: 'Gaming PC Setup',
+        category: 'Tech',
+        price: '$2,100',
+        note: 'Possible future setup.',
+        priority: 'Low',
+        date: 'Saved 3 weeks ago',
+        image: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=600&h=450&fit=crop&auto=format',
+        alt: 'Gaming PC setup',
+        url: 'https://pcpartpicker.com',
+        bookmarked: false
+      }, {
+        id: 8,
+        title: 'Japan Trip Idea',
+        category: 'Travel',
+        price: 'Plan',
+        note: 'Save places and activities for a future trip.',
+        priority: 'Medium',
+        date: 'Saved 1 month ago',
+        image: 'https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?w=600&h=450&fit=crop&auto=format',
+        alt: 'Japan travel',
+        url: 'https://japan.travel',
+        bookmarked: false
+      }];
 
-        if (targetItem) {
-          targetItem.classList.add('active');
-          targetItem.setAttribute('aria-current', 'page');
-          activeTab = tabId;
-          previousActive = tabId;
-        } else {
-          const fallback = nav.querySelector(`.nav-item[data-tab="${tabId}"]`);
-          if (fallback) {
-            fallback.classList.add('active');
-            fallback.setAttribute('aria-current', 'page');
-            activeTab = tabId;
-            previousActive = tabId;
+      const defaultCollections = [
+        { id: 1, name: '🚗 Dream Cars', items: [1], icon: '🚗' },
+        { id: 2, name: '💻 Tech', items: [2, 5, 7], icon: '💻' },
+        { id: 3, name: '✈️ Travel Ideas', items: [8], icon: '✈️' },
+        { id: 4, name: '🎬 Movies to Watch', items: [4], icon: '🎬' },
+        { id: 5, name: '👟 Fashion', items: [3], icon: '👟' },
+        { id: 6, name: '🏠 Future Home', items: [6], icon: '🏠' }
+      ];
+
+      // ----- STATE -----
+      let items = [];
+      let collections = [];
+      let nextItemId = 100;
+      let nextCollectionId = 100;
+      let currentModalItem = null;
+      let pageHistory = ['pageHome'];
+
+      // ----- LOAD / SAVE -----
+      function loadState() {
+        try {
+          const saved = localStorage.getItem('savmo_data');
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            items = parsed.items || [];
+            collections = parsed.collections || [];
+            nextItemId = parsed.nextItemId || 100;
+            nextCollectionId = parsed.nextCollectionId || 100;
+            return;
           }
+        } catch (e) {}
+        items = JSON.parse(JSON.stringify(defaultItems));
+        collections = JSON.parse(JSON.stringify(defaultCollections));
+        nextItemId = 100;
+        nextCollectionId = 100;
+        items.forEach(i => { if (i.id >= nextItemId) nextItemId = i.id + 1; });
+        collections.forEach(c => { if (c.id >= nextCollectionId) nextCollectionId = c.id + 1; });
+        saveState();
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem('savmo_data', JSON.stringify({ items, collections, nextItemId, nextCollectionId }));
+        } catch (e) {}
+      }
+
+      // ----- HELPERS -----
+      function getItemById(id) { return items.find(i => i.id === id); }
+
+      function getCollectionItems(cid) {
+        const c = collections.find(col => col.id === cid);
+        if (!c) return [];
+        return c.items.map(id => getItemById(id)).filter(Boolean);
+      }
+
+      function getCategories() {
+        const cats = ['All', ...new Set(items.map(i => i.category))];
+        return cats;
+      }
+
+      // ----- DOM REFS -----
+      const pages = {
+        home: document.getElementById('pageHome'),
+        explore: document.getElementById('pageExplore'),
+        add: document.getElementById('pageAdd'),
+        collections: document.getElementById('pageCollections'),
+        settings: document.getElementById('pageSettings'),
+        profile: document.getElementById('pageProfile'),
+        notifications: document.getElementById('pageNotifications')
+      };
+      const navItems = document.querySelectorAll('.nav-item');
+      const headerHome = document.getElementById('headerHome');
+      const headerSecondary = document.getElementById('headerSecondary');
+      const secondaryTitle = document.getElementById('secondaryPageTitle');
+      const backBtn = document.getElementById('backBtn');
+
+      const pageTitles = {
+        pageExplore: 'Explore',
+        pageAdd: 'Add',
+        pageCollections: 'Collections',
+        pageSettings: 'Settings',
+        pageProfile: 'Profile',
+        pageNotifications: 'Notifications'
+      };
+
+      // ----- NAVIGATION -----
+      function navigateTo(pageId, addToHistory = true) {
+        // hide all pages
+        Object.values(pages).forEach(p => p.classList.remove('active'));
+        const target = document.getElementById(pageId);
+        if (target) target.classList.add('active');
+
+        // update header
+        if (pageId === 'pageHome') {
+          headerHome.style.display = 'block';
+          headerSecondary.style.display = 'none';
+          // update nav
+          navItems.forEach(n => {
+            n.classList.remove('active');
+            n.removeAttribute('aria-current');
+            if (n.dataset.page === pageId) {
+              n.classList.add('active');
+              n.setAttribute('aria-current', 'page');
+            }
+          });
+        } else {
+          headerHome.style.display = 'none';
+          headerSecondary.style.display = 'block';
+          // set title
+          const title = pageTitles[pageId] || pageId.replace('page', '');
+          secondaryTitle.textContent = title;
+          // update nav
+          navItems.forEach(n => {
+            n.classList.remove('active');
+            n.removeAttribute('aria-current');
+            if (n.dataset.page === pageId) {
+              n.classList.add('active');
+              n.setAttribute('aria-current', 'page');
+            }
+          });
         }
-        // haptic feedback (if supported)
-        if (window.navigator && window.navigator.vibrate) {
-          window.navigator.vibrate(5);
+
+        if (addToHistory && pageId !== pageHistory[pageHistory.length - 1]) {
+          pageHistory.push(pageId);
+        }
+
+        // refresh content
+        if (pageId === 'pageHome') renderHome();
+        if (pageId === 'pageExplore') renderExplore();
+        if (pageId === 'pageCollections') renderCollections();
+        if (pageId === 'pageProfile') renderProfile();
+
+        // add page: show form
+        if (pageId === 'pageAdd') {
+          document.getElementById('addForm').style.display = 'block';
+          document.getElementById('addSuccess').classList.remove('visible');
         }
       }
 
-      // click handler
-      items.forEach(item => {
+      function goBack() {
+        if (pageHistory.length > 1) {
+          pageHistory.pop();
+          const prev = pageHistory[pageHistory.length - 1];
+          navigateTo(prev, false);
+        } else {
+          navigateTo('pageHome', false);
+        }
+      }
+
+      // ----- NAV ITEMS -----
+      navItems.forEach(item => {
         item.addEventListener('click', function(e) {
-          const tab = this.dataset.tab;
-          if (!tab) return;
-
-          // SPECIAL: Add button – action, not navigation
+          const pageId = this.dataset.page;
+          if (!pageId) return;
           if (this.classList.contains('add-btn')) {
-            // trigger save action
-            console.log('✨ Add / Save anything – open sheet');
-            if (window.navigator && window.navigator.vibrate) {
-              window.navigator.vibrate(8);
-            }
-            // press animation
-            this.style.transition = 'transform 0.1s';
-            this.style.transform = 'scale(0.92)';
-            setTimeout(() => { this.style.transform = ''; }, 150);
-
-            // do NOT change active tab – keep previous
-            // but we might want to visually pulse the add button only.
+            navigateTo('pageAdd');
             return;
           }
-
-          // normal tab switch (home, explore, collections, profile)
-          // if already active, just haptic and return
-          if (this.classList.contains('active')) {
-            if (window.navigator && window.navigator.vibrate) {
-              window.navigator.vibrate(3);
-            }
-            return;
-          }
-
-          setActiveTab(tab, this);
-
-          // press animation
-          this.style.transition = 'transform 0.1s';
-          this.style.transform = 'scale(0.96)';
-          setTimeout(() => {
-            this.style.transform = '';
-          }, 120);
-        });
-
-        // keyboard support
-        item.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            this.click();
-          }
+          navigateTo(pageId);
         });
       });
 
-      // ensure home is active initially
-      const home = nav.querySelector('.nav-item[data-tab="home"]');
-      if (home && !home.classList.contains('active')) {
-        setActiveTab('home', home);
+      // ----- BACK BUTTON -----
+      backBtn.addEventListener('click', goBack);
+
+      // ----- PROFILE BUTTONS -----
+      document.getElementById('profileBtnHome').addEventListener('click', () => {
+        navigateTo('pageProfile');
+      });
+
+      // ----- NOTIFICATION BUTTONS -----
+      function openNotifications() {
+        navigateTo('pageNotifications');
+      }
+      document.getElementById('notifBtnHome').addEventListener('click', openNotifications);
+      document.getElementById('notifBtnSecondary').addEventListener('click', openNotifications);
+
+      // ----- SETTINGS PROFILE LINK -----
+      document.getElementById('settingsProfile').addEventListener('click', () => {
+        navigateTo('pageProfile');
+      });
+
+      // ----- GREETING -----
+      function setGreeting() {
+        const h = new Date().getHours();
+        let g = 'Good evening';
+        if (h < 12) g = 'Good morning';
+        else if (h < 17) g = 'Good afternoon';
+        document.getElementById('greeting').textContent = g;
+      }
+      setGreeting();
+
+      // ----- RENDER: HOME -----
+      let homeSearchQuery = '';
+      let homeActiveCategory = 'All';
+      let homeSortValue = 'recent';
+
+      function renderHome() {
+        const grid = document.getElementById('homeGrid');
+        const chipsWrap = document.getElementById('homeChips');
+        const noResults = document.getElementById('homeNoResults');
+        const emptyState = document.getElementById('homeEmpty');
+        const recentList = document.getElementById('homeRecent');
+        const countEl = document.getElementById('itemCount');
+
+        const cats = getCategories();
+        chipsWrap.innerHTML = '';
+        cats.forEach(c => {
+          const chip = document.createElement('button');
+          chip.className = 'chip' + (c === homeActiveCategory ? ' active' : '');
+          chip.textContent = c;
+          chip.addEventListener('click', () => {
+            homeActiveCategory = c;
+            renderHome();
+          });
+          chipsWrap.appendChild(chip);
+        });
+
+        let filtered = [...items];
+        if (homeActiveCategory !== 'All') {
+          filtered = filtered.filter(i => i.category === homeActiveCategory);
+        }
+        const query = homeSearchQuery.trim().toLowerCase();
+        if (query) {
+          filtered = filtered.filter(i =>
+            i.title.toLowerCase().includes(query) ||
+            i.category.toLowerCase().includes(query) ||
+            (i.note && i.note.toLowerCase().includes(query))
+          );
+        }
+
+        const sortVal = document.getElementById('homeSort').value;
+        homeSortValue = sortVal;
+        switch (sortVal) {
+          case 'recent':
+            const order = ['Saved 2 days ago', 'Saved 4 days ago', 'Saved 1 week ago', 'Saved 2 weeks ago', 'Saved 3 weeks ago', 'Saved 1 month ago'];
+            filtered.sort((a, b) => order.indexOf(a.date) - order.indexOf(b.date));
+            break;
+          case 'oldest':
+            const orderOld = ['Saved 1 month ago', 'Saved 3 weeks ago', 'Saved 2 weeks ago', 'Saved 1 week ago', 'Saved 4 days ago', 'Saved 2 days ago'];
+            filtered.sort((a, b) => orderOld.indexOf(a.date) - orderOld.indexOf(b.date));
+            break;
+          case 'price-low':
+            filtered.sort((a, b) => {
+              const pa = parseFloat(a.price.replace(/[$,]/g, '')) || 0;
+              const pb = parseFloat(b.price.replace(/[$,]/g, '')) || 0;
+              return pa - pb;
+            });
+            break;
+          case 'price-high':
+            filtered.sort((a, b) => {
+              const pa = parseFloat(a.price.replace(/[$,]/g, '')) || 0;
+              const pb = parseFloat(b.price.replace(/[$,]/g, '')) || 0;
+              return pb - pa;
+            });
+            break;
+          case 'priority':
+            const pri = { 'High': 0, 'Medium': 1, 'Low': 2 };
+            filtered.sort((a, b) => pri[a.priority] - pri[b.priority]);
+            break;
+          default:
+            break;
+        }
+
+        countEl.textContent = items.length + ' thing' + (items.length !== 1 ? 's' : '') + ' saved';
+
+        if (items.length === 0) {
+          emptyState.classList.add('visible');
+          grid.innerHTML = '';
+          noResults.classList.remove('visible');
+          recentList.innerHTML = '';
+          return;
+        }
+        emptyState.classList.remove('visible');
+
+        if (filtered.length === 0) {
+          noResults.classList.add('visible');
+          grid.innerHTML = '';
+        } else {
+          noResults.classList.remove('visible');
+          grid.innerHTML = '';
+          filtered.forEach(item => {
+            grid.appendChild(createCard(item));
+          });
+        }
+
+        const sorted = [...items].sort((a, b) => {
+          const order = ['Saved 2 days ago', 'Saved 4 days ago', 'Saved 1 week ago', 'Saved 2 weeks ago', 'Saved 3 weeks ago', 'Saved 1 month ago'];
+          return order.indexOf(a.date) - order.indexOf(b.date);
+        });
+        const recent = sorted.slice(0, 3);
+        recentList.innerHTML = '';
+        recent.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'recent-item';
+          div.innerHTML = `
+            <img src="${item.image}" alt="${item.alt || item.title}" loading="lazy" />
+            <div class="recent-item-body">
+              <div class="recent-item-title">${item.title}</div>
+              <div class="recent-item-category">${item.category}</div>
+            </div>
+          `;
+          div.addEventListener('click', () => openModal(item));
+          recentList.appendChild(div);
+        });
       }
 
-      // expose for debugging
-      window.switchTab = function(tabId) {
-        const target = nav.querySelector(`.nav-item[data-tab="${tabId}"]`);
-        if (target && !target.classList.contains('add-btn')) {
-          setActiveTab(tabId, target);
-        } else if (target && target.classList.contains('add-btn')) {
-          console.log('Add button is a primary action, not a tab.');
-        }
+      // ----- CARD CREATOR -----
+      function createCard(item) {
+        const card = document.createElement('div');
+        card.className = 'saved-card';
+        card.dataset.id = item.id;
+        card.innerHTML = `
+          <div class="saved-card-img">
+            <img src="${item.image}" alt="${item.alt || item.title}" loading="lazy" />
+            <div class="bookmark ${item.bookmarked ? 'active' : ''}" data-id="${item.id}" aria-label="Bookmark item">
+              <i class="${item.bookmarked ? 'fas' : 'far'} fa-bookmark"></i>
+            </div>
+          </div>
+          <div class="saved-card-body">
+            <div class="saved-card-category">${item.category}</div>
+            <div class="saved-card-title">${item.title}</div>
+            <div class="saved-card-price">${item.price}</div>
+            ${item.note ? `<div class="saved-card-note">${item.note}</div>` : ''}
+            <div class="saved-card-footer">
+              <span class="saved-card-date">${item.date}</span>
+              <span class="saved-card-priority ${item.priority.toLowerCase()}">${item.priority}</span>
+            </div>
+          </div>
+        `;
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.bookmark')) return;
+          openModal(item);
+        });
+        const bm = card.querySelector('.bookmark');
+        bm.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const icon = bm.querySelector('i');
+          item.bookmarked = !item.bookmarked;
+          icon.classList.toggle('far');
+          icon.classList.toggle('fas');
+          bm.classList.toggle('active');
+          saveState();
+        });
+        return card;
+      }
+
+      // ----- HOME SEARCH & SORT -----
+      document.getElementById('homeSearch').addEventListener('input', (e) => {
+        homeSearchQuery = e.target.value;
+        renderHome();
+      });
+      document.getElementById('homeSort').addEventListener('change', (e) => {
+        homeSortValue = e.target.value;
+        renderHome();
+      });
+      document.getElementById('homeEmptyAdd').addEventListener('click', () => {
+        navigateTo('pageAdd');
+      });
+
+      // ----- RENDER: EXPLORE -----
+      const exploreCategories = ['Cars', 'Tech', 'Fashion', 'Movies', 'Gaming', 'Travel', 'House', 'Gift Ideas'];
+      const exploreImages = {
+        'Cars': 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=400&h=300&fit=crop&auto=format',
+        'Tech': 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&h=300&fit=crop&auto=format',
+        'Fashion': 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=300&fit=crop&auto=format',
+        'Movies': 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=300&fit=crop&auto=format',
+        'Gaming': 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=300&fit=crop&auto=format',
+        'Travel': 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=300&fit=crop&auto=format',
+        'House': 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=400&h=300&fit=crop&auto=format',
+        'Gift Ideas': 'https://images.unsplash.com/photo-1512909006721-3d6018887383?w=400&h=300&fit=crop&auto=format'
       };
 
-      // if app is in standalone mode, ensure safe area
-      if (window.navigator.standalone) {
-        document.documentElement.style.setProperty('--safe-area-inset-bottom', '20px');
+      function renderExplore() {
+        const grid = document.getElementById('exploreGrid');
+        const chipsWrap = document.getElementById('exploreChips');
+
+        const existingCategories = new Set(items.map(i => i.category));
+        const trending = exploreCategories.filter(c => !existingCategories.has(c)).slice(0, 4);
+        const extra = exploreCategories.filter(c => existingCategories.has(c)).slice(0, 2);
+        const display = [...trending, ...extra].slice(0, 6);
+
+        grid.innerHTML = '';
+        display.forEach(cat => {
+          const card = document.createElement('div');
+          card.className = 'saved-card';
+          card.style.cursor = 'pointer';
+          card.innerHTML = `
+            <div class="saved-card-img">
+              <img src="${exploreImages[cat] || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop&auto=format'}" alt="${cat}" loading="lazy" />
+            </div>
+            <div class="saved-card-body">
+              <div class="saved-card-title">${cat}</div>
+              <div class="saved-card-price">Explore ${cat}</div>
+              <div style="margin-top:8px;display:flex;gap:8px;">
+                <button style="padding:6px 16px;border-radius:100px;background:#2b7fff;border:none;color:white;font-size:12px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;min-height:36px;">Save</button>
+              </div>
+            </div>
+          `;
+          card.querySelector('button').addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('addCategory').value = cat;
+            document.getElementById('addTitle').value = `Great ${cat} idea`;
+            navigateTo('pageAdd');
+          });
+          grid.appendChild(card);
+        });
+
+        chipsWrap.innerHTML = '';
+        exploreCategories.forEach(c => {
+          const chip = document.createElement('button');
+          chip.className = 'chip';
+          chip.textContent = c;
+          chip.addEventListener('click', () => {
+            document.getElementById('addCategory').value = c;
+            document.getElementById('addTitle').value = `Interesting ${c} find`;
+            navigateTo('pageAdd');
+          });
+          chipsWrap.appendChild(chip);
+        });
       }
+
+      // ----- RENDER: COLLECTIONS -----
+      function renderCollections() {
+        const grid = document.getElementById('collectionGrid');
+        const empty = document.getElementById('collectionEmpty');
+
+        if (collections.length === 0) {
+          empty.classList.add('visible');
+          grid.innerHTML = '';
+          return;
+        }
+        empty.classList.remove('visible');
+
+        grid.innerHTML = '';
+        collections.forEach(col => {
+          const colItems = getCollectionItems(col.id);
+          const card = document.createElement('div');
+          card.className = 'collection-card';
+          const previews = colItems.slice(0, 3);
+          card.innerHTML = `
+            <div class="icon">${col.icon || '📁'}</div>
+            <div class="name">${col.name}</div>
+            <div class="count">${colItems.length} items</div>
+            <div class="preview-images">
+              ${previews.map(item => `<img src="${item.image}" alt="${item.title}" loading="lazy" />`).join('')}
+            </div>
+          `;
+          card.addEventListener('click', () => {
+            alert(`📂 ${col.name}\n${colItems.length} items\n\n${colItems.map(i => '• ' + i.title).join('\n')}`);
+          });
+          grid.appendChild(card);
+        });
+      }
+
+      // ----- CREATE COLLECTION -----
+      document.getElementById('createCollectionBtn').addEventListener('click', () => {
+        const name = prompt('Collection name:');
+        if (name && name.trim()) {
+          collections.push({
+            id: nextCollectionId++,
+            name: name.trim(),
+            items: [],
+            icon: '📁'
+          });
+          saveState();
+          renderCollections();
+        }
+      });
+      document.getElementById('collectionEmptyBtn').addEventListener('click', () => {
+        document.getElementById('createCollectionBtn').click();
+      });
+
+      // ----- RENDER: PROFILE -----
+      function renderProfile() {
+        document.getElementById('profileItemCount').textContent = items.length;
+        document.getElementById('profileCollectionCount').textContent = collections.length;
+      }
+
+      // ----- MODAL -----
+      function openModal(item) {
+        currentModalItem = item;
+        document.getElementById('modalImage').src = item.image;
+        document.getElementById('modalImage').alt = item.alt || item.title;
+        document.getElementById('modalCategory').textContent = item.category;
+        document.getElementById('modalTitle').textContent = item.title;
+        document.getElementById('modalPrice').textContent = item.price;
+        document.getElementById('modalNote').textContent = item.note || 'No note added.';
+        document.getElementById('modalPriority').textContent = item.priority;
+        document.getElementById('modalDate').textContent = item.date;
+        document.getElementById('modalOverlay').classList.add('visible');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        document.getElementById('modalOverlay').classList.remove('visible');
+        document.body.style.overflow = '';
+        currentModalItem = null;
+      }
+
+      document.getElementById('modalClose').addEventListener('click', closeModal);
+      document.getElementById('modalOverlay').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeModal();
+      });
+
+      document.getElementById('modalOpenLink').addEventListener('click', () => {
+        if (currentModalItem) {
+          alert(`🔗 Opening: ${currentModalItem.url || 'No link saved'}`);
+        }
+      });
+      document.getElementById('modalEdit').addEventListener('click', () => {
+        if (currentModalItem) {
+          const newNote = prompt('Edit note:', currentModalItem.note || '');
+          if (newNote !== null) {
+            currentModalItem.note = newNote;
+            saveState();
+            closeModal();
+            renderHome();
+          }
+        }
+      });
+      document.getElementById('modalDelete').addEventListener('click', () => {
+        if (currentModalItem && confirm(`Delete "${currentModalItem.title}"?`)) {
+          items = items.filter(i => i.id !== currentModalItem.id);
+          collections.forEach(c => {
+            c.items = c.items.filter(id => id !== currentModalItem.id);
+          });
+          saveState();
+          closeModal();
+          renderHome();
+          renderCollections();
+        }
+      });
+
+      // ----- ADD PAGE -----
+      let addImageData = null;
+
+      document.getElementById('addImageBtn').addEventListener('click', () => {
+        document.getElementById('addImageInput').click();
+      });
+      document.getElementById('addImageInput').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            addImageData = ev.target.result;
+            const preview = document.getElementById('addImagePreview');
+            preview.src = addImageData;
+            preview.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      document.getElementById('addImportLink').addEventListener('click', () => {
+        const url = document.getElementById('addUrl').value.trim();
+        if (url) {
+          try {
+            const domain = new URL(url).hostname.replace('www.', '');
+            document.getElementById('addTitle').value = `Saved from ${domain}`;
+          } catch (e) {
+            document.getElementById('addTitle').value = 'Saved link';
+          }
+          alert('🔗 Link imported! Fill in the details and save.');
+        }
+      });
+
+      document.getElementById('addSaveBtn').addEventListener('click', () => {
+        const title = document.getElementById('addTitle').value.trim();
+        const category = document.getElementById('addCategory').value;
+        const price = document.getElementById('addPrice').value.trim() || 'Saved';
+        const note = document.getElementById('addNote').value.trim();
+        const url = document.getElementById('addUrl').value.trim();
+        const priority = document.getElementById('addPriority').value;
+
+        if (!title) {
+          alert('Please enter a title.');
+          return;
+        }
+
+        const newItem = {
+          id: nextItemId++,
+          title,
+          category,
+          price,
+          note: note || 'No note added.',
+          priority,
+          date: 'Saved just now',
+          image: addImageData || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=450&fit=crop&auto=format',
+          alt: title,
+          url: url || '',
+          bookmarked: false
+        };
+
+        items.unshift(newItem);
+        saveState();
+
+        document.getElementById('addForm').style.display = 'none';
+        const success = document.getElementById('addSuccess');
+        success.classList.add('visible');
+
+        document.getElementById('addTitle').value = '';
+        document.getElementById('addPrice').value = '';
+        document.getElementById('addNote').value = '';
+        document.getElementById('addUrl').value = '';
+        document.getElementById('addImagePreview').style.display = 'none';
+        addImageData = null;
+        document.getElementById('addImageInput').value = '';
+
+        renderHome();
+        renderCollections();
+        renderProfile();
+      });
+
+      document.getElementById('addViewItem').addEventListener('click', () => {
+        document.getElementById('addSuccess').classList.remove('visible');
+        document.getElementById('addForm').style.display = 'block';
+        navigateTo('pageHome');
+        renderHome();
+      });
+
+      document.getElementById('addAnother').addEventListener('click', () => {
+        document.getElementById('addSuccess').classList.remove('visible');
+        document.getElementById('addForm').style.display = 'block';
+      });
+
+      // ----- SETTINGS TOGGLES -----
+      document.getElementById('darkModeToggle').addEventListener('click', function() {
+        this.classList.toggle('on');
+      });
+      document.getElementById('reminderToggle').addEventListener('click', function() {
+        this.classList.toggle('on');
+      });
+
+      // ----- NAV ADD BUTTON -----
+      document.getElementById('navAddBtn').addEventListener('click', () => {
+        navigateTo('pageAdd');
+      });
+
+      // ----- INIT -----
+      loadState();
+      renderHome();
+      renderExplore();
+      renderCollections();
+      renderProfile();
+
+      // ensure home active
+      document.querySelector('.nav-item[data-page="pageHome"]')?.classList.add('active');
+      document.querySelector('.nav-item[data-page="pageHome"]')?.setAttribute('aria-current', 'page');
+      pageHistory = ['pageHome'];
+
+      console.log('🏠 Savmo PWA ready with', items.length, 'items and', collections.length, 'collections');
+
     })();
   </script>
+
 </body>
 </html>
