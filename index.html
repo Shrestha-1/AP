@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Save · premium navigation</title>
+  <!-- Font & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #0b0d0e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      min-height: 100vh;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* --- app content : ensures nothing is hidden behind nav --- */
+    .app-content {
+      width: 100%;
+      max-width: 480px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 20px 100px 20px;
+      color: rgba(255,255,255,0.3);
+      text-align: center;
+      font-weight: 400;
+      letter-spacing: 0.2px;
+      pointer-events: none;
+    }
+    .app-content span {
+      background: rgba(255,255,255,0.04);
+      padding: 14px 28px;
+      border-radius: 60px;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.5);
+    }
+    .app-content small {
+      display: block;
+      margin-top: 12px;
+      font-size: 0.8rem;
+      opacity: 0.4;
+    }
+
+    /* ===== BOTTOM NAVIGATION ===== */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      background: rgba(14, 16, 18, 0.88);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-radius: 28px 28px 0 0;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.5), 0 -1px 4px rgba(0,0,0,0.3);
+      padding: 8px 12px 0 12px;
+      padding-bottom: 0;
+      z-index: 100;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-bottom: none;
+      will-change: transform;
+    }
+
+    /* safe-area container: background extends to bottom, content respects inset */
+    .nav-safe-area {
+      padding-bottom: env(safe-area-inset-bottom, 12px);
+      background: transparent;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      padding-top: 6px;
+    }
+
+    /* ---- each nav item ---- */
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      text-decoration: none;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 4px 0 2px 0;
+      min-width: 48px;
+      flex: 1;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      -webkit-touch-callout: none;
+      touch-action: manipulation;
+      border-radius: 30px;
+      min-height: 44px;
+      padding-bottom: 4px;
+    }
+
+    .nav-item .icon-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 30px;
+      transition: all 0.18s cubic-bezier(0.2, 0, 0, 1);
+      position: relative;
+    }
+
+    .nav-item i {
+      font-size: 21px;
+      color: #6d7278;
+      transition: color 0.2s, transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
+      display: block;
+      line-height: 1;
+      width: 24px;
+      text-align: center;
+      opacity: 0.7;
+    }
+
+    .nav-item .label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      color: #6d7278;
+      margin-top: 3px;
+      transition: color 0.2s, opacity 0.2s;
+      line-height: 1.2;
+      opacity: 0.7;
+      font-family: 'Inter', -apple-system, sans-serif;
+    }
+
+    /* active state (for home, explore, collections, profile) – NO DOT */
+    .nav-item.active i {
+      color: #eef0f2;
+      opacity: 1;
+    }
+    .nav-item.active .label {
+      color: #eaeef0;
+      opacity: 1;
+      font-weight: 500;
+    }
+
+    /* press feedback for all items */
+    .nav-item:active:not(.add-btn) .icon-wrap {
+      transform: scale(0.92);
+    }
+    .nav-item:active .icon-wrap i {
+      transform: scale(0.90);
+    }
+    .nav-item.active:active .icon-wrap {
+      transform: scale(0.94);
+    }
+
+    /* ===== CENTER ADD BUTTON (balanced, floating) ===== */
+    .nav-item.add-btn {
+      flex: 0 0 auto;
+      margin-top: -12px;  /* overlap, but not too much */
+      position: relative;
+      z-index: 10;
+      min-width: 56px;
+      padding-bottom: 0;
+      background: transparent;
+      border: none;
+    }
+
+    .nav-item.add-btn .icon-wrap {
+      width: 56px;
+      height: 56px;
+      background: #2b7fff;
+      background: linear-gradient(145deg, #3f8aff, #1a6aff);
+      box-shadow: 0 6px 20px rgba(27, 94, 255, 0.35), 0 2px 8px rgba(0,0,0,0.25);
+      border-radius: 50%;
+      transition: all 0.18s cubic-bezier(0.2, 0, 0, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .nav-item.add-btn i {
+      font-size: 28px;
+      color: white;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+      width: 30px;
+      opacity: 1;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .nav-item.add-btn .label {
+      margin-top: 4px;
+      color: #aab0b6;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+      opacity: 0.8;
+      font-size: 10px;
+    }
+
+    .nav-item.add-btn:active .icon-wrap {
+      transform: scale(0.92);
+      box-shadow: 0 4px 16px rgba(27, 94, 255, 0.5);
+    }
+    .nav-item.add-btn:active i {
+      transform: scale(0.88);
+    }
+
+    /* active state for add? we keep it subtle, but we don't want dot */
+    .nav-item.add-btn.active i {
+      color: white;
+      opacity: 1;
+    }
+    .nav-item.add-btn.active .label {
+      color: #eaeef0;
+      opacity: 1;
+    }
+    /* but we never set add as active via navigation, only via click? we'll keep it clean */
+
+    /* --- top separation (soft) --- */
+    .bottom-nav::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 20px;
+      right: 20px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05) 20%, rgba(255,255,255,0.05) 80%, transparent);
+    }
+
+    /* safe area: extend background to bottom, content inside respects it */
+    .bottom-nav {
+      padding-bottom: 0;
+    }
+    .nav-safe-area {
+      padding-bottom: env(safe-area-inset-bottom, 12px);
+    }
+
+    /* small screens adjustments */
+    @media (max-width: 400px) {
+      .nav-item i {
+        font-size: 19px;
+      }
+      .nav-item .label {
+        font-size: 9px;
+        letter-spacing: 0.2px;
+      }
+      .nav-item.add-btn .icon-wrap {
+        width: 50px;
+        height: 50px;
+      }
+      .nav-item.add-btn i {
+        font-size: 24px;
+      }
+      .nav-item.add-btn {
+        margin-top: -10px;
+      }
+      .nav-inner {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .nav-item.add-btn .icon-wrap {
+        width: 46px;
+        height: 46px;
+      }
+      .nav-item.add-btn i {
+        font-size: 22px;
+      }
+      .nav-item.add-btn {
+        margin-top: -8px;
+      }
+      .nav-item .label {
+        font-size: 8px;
+      }
+    }
+
+    @media (min-width: 600px) {
+      .bottom-nav {
+        border-radius: 32px 32px 0 0;
+      }
+    }
+
+    /* content bottom padding to avoid overlap */
+    .app-content {
+      padding-bottom: calc(80px + env(safe-area-inset-bottom, 16px));
+    }
+
+    /* accessibility: larger tap target */
+    .nav-item {
+      min-height: 44px;
+    }
+
+    button.nav-item {
+      background: none;
+      border: none;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    /* demo watermark */
+    .demo-note {
+      position: fixed;
+      top: 20px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: rgba(255,255,255,0.12);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.6px;
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- content area -->
+  <div class="app-content">
+    <span>📌 save anything · remember later</span>
+    <small>content flows above the navigation</small>
+  </div>
+  <div class="demo-note">premium · minimal · native</div>
+
+  <!-- ===== BOTTOM NAVIGATION ===== -->
+  <nav class="bottom-nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-safe-area">
+      <div class="nav-inner">
+
+        <!-- 1. Home -->
+        <button class="nav-item active" data-tab="home" aria-current="page" aria-label="Home">
+          <span class="icon-wrap"><i class="fas fa-house"></i></span>
+          <span class="label">Home</span>
+        </button>
+
+        <!-- 2. Explore -->
+        <button class="nav-item" data-tab="explore" aria-label="Explore">
+          <span class="icon-wrap"><i class="fas fa-compass"></i></span>
+          <span class="label">Explore</span>
+        </button>
+
+        <!-- 3. Add (primary action) – balanced floating -->
+        <button class="nav-item add-btn" data-tab="add" aria-label="Save anything">
+          <span class="icon-wrap"><i class="fas fa-plus"></i></span>
+          <span class="label">Add</span>
+        </button>
+
+        <!-- 4. Collections -->
+        <button class="nav-item" data-tab="collections" aria-label="Collections">
+          <span class="icon-wrap"><i class="fas fa-folder"></i></span>
+          <span class="label">Collections</span>
+        </button>
+
+        <!-- 5. Profile -->
+        <button class="nav-item" data-tab="profile" aria-label="Profile">
+          <span class="icon-wrap"><i class="fas fa-user"></i></span>
+          <span class="label">Profile</span>
+        </button>
+
+      </div>
+    </div>
+  </nav>
+
+  <script>
+    (function() {
+      const nav = document.querySelector('.bottom-nav');
+      const items = nav.querySelectorAll('.nav-item');
+      let activeTab = 'home';
+      let previousActive = 'home'; // to restore after add action
+
+      function setActiveTab(tabId, targetItem) {
+        items.forEach(item => {
+          item.classList.remove('active');
+          item.removeAttribute('aria-current');
+        });
+
+        if (targetItem) {
+          targetItem.classList.add('active');
+          targetItem.setAttribute('aria-current', 'page');
+          activeTab = tabId;
+          previousActive = tabId;
+        } else {
+          const fallback = nav.querySelector(`.nav-item[data-tab="${tabId}"]`);
+          if (fallback) {
+            fallback.classList.add('active');
+            fallback.setAttribute('aria-current', 'page');
+            activeTab = tabId;
+            previousActive = tabId;
+          }
+        }
+        // haptic feedback (if supported)
+        if (window.navigator && window.navigator.vibrate) {
+          window.navigator.vibrate(5);
+        }
+      }
+
+      // click handler
+      items.forEach(item => {
+        item.addEventListener('click', function(e) {
+          const tab = this.dataset.tab;
+          if (!tab) return;
+
+          // SPECIAL: Add button – action, not navigation
+          if (this.classList.contains('add-btn')) {
+            // trigger save action
+            console.log('✨ Add / Save anything – open sheet');
+            if (window.navigator && window.navigator.vibrate) {
+              window.navigator.vibrate(8);
+            }
+            // press animation
+            this.style.transition = 'transform 0.1s';
+            this.style.transform = 'scale(0.92)';
+            setTimeout(() => { this.style.transform = ''; }, 150);
+
+            // do NOT change active tab – keep previous
+            // but we might want to visually pulse the add button only.
+            return;
+          }
+
+          // normal tab switch (home, explore, collections, profile)
+          // if already active, just haptic and return
+          if (this.classList.contains('active')) {
+            if (window.navigator && window.navigator.vibrate) {
+              window.navigator.vibrate(3);
+            }
+            return;
+          }
+
+          setActiveTab(tab, this);
+
+          // press animation
+          this.style.transition = 'transform 0.1s';
+          this.style.transform = 'scale(0.96)';
+          setTimeout(() => {
+            this.style.transform = '';
+          }, 120);
+        });
+
+        // keyboard support
+        item.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            this.click();
+          }
+        });
+      });
+
+      // ensure home is active initially
+      const home = nav.querySelector('.nav-item[data-tab="home"]');
+      if (home && !home.classList.contains('active')) {
+        setActiveTab('home', home);
+      }
+
+      // expose for debugging
+      window.switchTab = function(tabId) {
+        const target = nav.querySelector(`.nav-item[data-tab="${tabId}"]`);
+        if (target && !target.classList.contains('add-btn')) {
+          setActiveTab(tabId, target);
+        } else if (target && target.classList.contains('add-btn')) {
+          console.log('Add button is a primary action, not a tab.');
+        }
+      };
+
+      // if app is in standalone mode, ensure safe area
+      if (window.navigator.standalone) {
+        document.documentElement.style.setProperty('--safe-area-inset-bottom', '20px');
+      }
+    })();
+  </script>
+</body>
+</html>
