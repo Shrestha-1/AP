@@ -7,6 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <!-- These 3 lines are all you need -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<link rel="apple-touch-icon" href="hello.ico" />
+<link rel="manifest" href='data:application/json,{"name":"Savmo","short_name":"Savmo","start_url":"/","display":"standalone","background_color":"#000000","theme_color":"#0a84ff","icons":[{"src":"favicon.ico","sizes":"any","type":"image/x-icon"}]}' />
   <style>
     /* ----- RESET & BASE ----- */
     * {
@@ -334,6 +338,10 @@
     .chips-wrap::-webkit-scrollbar {
       display: none;
     }
+    .chips-wrap {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
     .chip {
       flex-shrink: 0;
       padding: 9px 18px;
@@ -388,6 +396,23 @@
     .section-action:hover {
       opacity: 0.7;
     }
+    .section-header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .select-toggle-btn {
+      background: none;
+      border: none;
+      color: var(--accent-strong);
+      font-size: 13.5px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      padding: 6px 4px;
+      min-height: 32px;
+    }
+    .select-toggle-btn:active { opacity: 0.6; }
     .sort-wrap {
       display: flex;
       align-items: center;
@@ -566,6 +591,10 @@
     }
     .recent-list::-webkit-scrollbar {
       display: none;
+    }
+    .recent-list {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
     .recent-item {
       flex-shrink: 0;
@@ -1709,6 +1738,537 @@
     .app-shell {
       padding-bottom: calc(120px + env(safe-area-inset-bottom, 16px));
     }
+
+    /* ----- CUSTOM SELECT (replaces native <select> UI) ----- */
+    .custom-select {
+      position: relative;
+      width: 100%;
+    }
+    .custom-select .visually-hidden-select {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .custom-select-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 13px 16px;
+      background: var(--bg-card);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: var(--label);
+      font-size: 15px;
+      font-family: inherit;
+      font-weight: 400;
+      cursor: pointer;
+      min-height: 48px;
+      transition: background 0.15s, box-shadow 0.2s;
+      text-align: left;
+    }
+    .custom-select-trigger span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .custom-select-trigger:hover {
+      background: var(--bg-card-hover);
+    }
+    .custom-select-trigger .icon-svg {
+      color: var(--label-4);
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .custom-select.open .custom-select-trigger {
+      box-shadow: 0 0 0 3px var(--accent-soft);
+      background: var(--bg-card-hover);
+    }
+    .custom-select.open .custom-select-trigger .icon-svg {
+      transform: rotate(180deg);
+    }
+    .custom-select-sm {
+      width: auto;
+    }
+    .custom-select-sm .custom-select-trigger {
+      width: auto;
+      padding: 6px 10px;
+      min-height: 32px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--label-2);
+      border-radius: 10px;
+      gap: 4px;
+    }
+    .custom-select-sm .custom-select-trigger .icon-svg {
+      width: 14px;
+      height: 14px;
+    }
+    .custom-select-list {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: var(--bg-elevated-2);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.55);
+      max-height: 0;
+      opacity: 0;
+      overflow-y: auto;
+      pointer-events: none;
+      transition: max-height 0.2s cubic-bezier(0.2,0,0,1), opacity 0.15s;
+      z-index: 60;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .custom-select-list::-webkit-scrollbar { display: none; }
+    .custom-select-sm .custom-select-list {
+      right: auto;
+      min-width: 170px;
+    }
+    .custom-select-list.open {
+      max-height: 260px;
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .custom-select-option {
+      padding: 12px 16px;
+      font-size: 14.5px;
+      font-weight: 500;
+      color: var(--label-2);
+      cursor: pointer;
+      transition: background 0.12s;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .custom-select-option:hover {
+      background: rgba(255,255,255,0.06);
+    }
+    .custom-select-option.selected {
+      color: var(--accent-strong);
+      font-weight: 600;
+    }
+    .custom-select-option .check-mark {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      color: var(--accent-strong);
+    }
+
+    /* ----- MODAL / ALERT / BOTTOM SHEET SYSTEM ----- */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s;
+    }
+    .modal-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .ios-alert {
+      width: min(300px, 84vw);
+      background: rgba(58,58,60,0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 18px;
+      overflow: hidden;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+      animation: alertPop 0.22s cubic-bezier(0.2,0,0,1);
+    }
+    @keyframes alertPop {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .ios-alert-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--label);
+      padding: 20px 18px 4px;
+      letter-spacing: -0.2px;
+    }
+    .ios-alert-message {
+      font-size: 13px;
+      color: var(--label-2);
+      padding: 2px 18px 16px;
+      line-height: 1.45;
+    }
+    .ios-alert-input {
+      width: calc(100% - 32px);
+      margin: 0 16px 16px;
+      padding: 10px 12px;
+      border-radius: 9px;
+      background: rgba(0,0,0,0.28);
+      border: none;
+      color: var(--label);
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      resize: none;
+    }
+    .ios-alert-actions {
+      display: flex;
+      border-top: 1px solid rgba(255,255,255,0.15);
+    }
+    .ios-alert-actions button {
+      flex: 1;
+      padding: 14px;
+      background: none;
+      border: none;
+      color: var(--accent-strong);
+      font-size: 16.5px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.12s;
+    }
+    .ios-alert-actions button + button {
+      border-left: 1px solid rgba(255,255,255,0.15);
+    }
+    .ios-alert-actions button:active {
+      background: rgba(255,255,255,0.08);
+    }
+    .ios-alert-actions button.cancel {
+      font-weight: 600;
+      color: var(--label);
+    }
+    .ios-alert-actions button.destructive {
+      color: var(--red);
+      font-weight: 600;
+    }
+
+    .bottom-sheet-wrap {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .bottom-sheet {
+      pointer-events: auto;
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-elevated);
+      border-radius: 26px 26px 0 0;
+      max-height: 78vh;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(100%);
+      transition: transform 0.32s cubic-bezier(0.2,0,0,1);
+      padding-bottom: env(safe-area-inset-bottom, 18px);
+      box-shadow: 0 -12px 50px rgba(0,0,0,0.5);
+    }
+    .bottom-sheet.appear {
+      transform: translateY(0);
+    }
+    .bottom-sheet-handle {
+      width: 36px;
+      height: 5px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.25);
+      margin: 10px auto 4px;
+      flex-shrink: 0;
+    }
+    .bottom-sheet-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 20px 16px;
+      flex-shrink: 0;
+    }
+    .bottom-sheet-header .icon-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      flex-shrink: 0;
+    }
+    .bottom-sheet-header .icon-badge .icon-svg {
+      width: 20px;
+      height: 20px;
+    }
+    .bottom-sheet-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--label);
+      letter-spacing: -0.3px;
+    }
+    .bottom-sheet-count {
+      font-size: 13px;
+      color: var(--label-4);
+      margin-top: 1px;
+    }
+    .bottom-sheet-close {
+      margin-left: auto;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: none;
+      color: var(--label-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .bottom-sheet-close .icon-svg {
+      width: 16px;
+      height: 16px;
+    }
+    .bottom-sheet-list {
+      overflow-y: auto;
+      padding: 4px 16px 20px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .bottom-sheet-list::-webkit-scrollbar { display: none; }
+    .bottom-sheet-row {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 10px 6px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .bottom-sheet-row:hover {
+      background: var(--bg-card);
+    }
+    .bottom-sheet-row img {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.05);
+    }
+    .bottom-sheet-row-title {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--label);
+    }
+    .bottom-sheet-row-cat {
+      font-size: 12px;
+      color: var(--label-4);
+      margin-top: 2px;
+    }
+    .bottom-sheet-empty {
+      text-align: center;
+      color: var(--label-4);
+      font-size: 14px;
+      padding: 30px 0;
+    }
+
+    /* ----- MULTI-SELECT MODE ----- */
+    .saved-card {
+      position: relative;
+      touch-action: pan-y;
+    }
+    .saved-card.selectable { cursor: pointer; }
+    .saved-card.selected {
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+    }
+    .select-check {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 2px solid rgba(255,255,255,0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+      color: white;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .select-check .icon-svg { width: 14px; height: 14px; stroke-width: 3; }
+    .saved-card.selected .select-check {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .select-action-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+      display: flex;
+      justify-content: center;
+      z-index: 95;
+      pointer-events: none;
+      padding: 0 20px;
+    }
+    .select-action-bar-inner {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(28,28,30,0.92);
+      backdrop-filter: saturate(180%) blur(22px);
+      -webkit-backdrop-filter: saturate(180%) blur(22px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 100px;
+      padding: 10px 10px 10px 20px;
+      box-shadow: 0 12px 34px rgba(0,0,0,0.5);
+      transform: translateY(16px);
+      opacity: 0;
+      transition: transform 0.22s cubic-bezier(0.2,0,0,1), opacity 0.22s;
+    }
+    .select-action-bar.visible .select-action-bar-inner {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .select-count {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--label-2);
+      white-space: nowrap;
+    }
+    .select-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .select-actions button {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 16px;
+      border-radius: 100px;
+      border: none;
+      background: var(--bg-card);
+      color: var(--label);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .select-actions button.destructive {
+      background: var(--red-soft);
+      color: #ff8a80;
+    }
+    .select-actions button:active { transform: scale(0.95); }
+
+    /* ----- TOAST ACTION BUTTON ----- */
+    .toast-action {
+      background: none;
+      border: none;
+      color: var(--accent-strong);
+      font-weight: 700;
+      font-size: 13px;
+      font-family: inherit;
+      cursor: pointer;
+      padding: 4px 8px;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    /* ----- PRICE TARGET FLAG ----- */
+    .price-flag {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.06);
+      color: var(--label-3);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+      width: fit-content;
+    }
+    .price-flag .icon-svg { width: 11px; height: 11px; stroke-width: 3; }
+    .price-flag.hit {
+      color: #30d158;
+      background: rgba(48,209,88,0.14);
+    }
+
+    /* ----- LIGHT THEME ----- */
+    body.light-theme {
+      --bg: #f2f2f7;
+      --bg-elevated: #ffffff;
+      --bg-elevated-2: #ffffff;
+      --bg-card: rgba(0,0,0,0.045);
+      --bg-card-hover: rgba(0,0,0,0.08);
+      --hairline: rgba(0,0,0,0.08);
+      --hairline-soft: rgba(0,0,0,0.07);
+      --label: #1c1c1e;
+      --label-2: rgba(28,28,30,0.68);
+      --label-3: rgba(28,28,30,0.4);
+      --label-4: rgba(28,28,30,0.24);
+      --accent: #0a84ff;
+      --accent-soft: rgba(10,132,255,0.12);
+      --accent-strong: #0068d6;
+      --red: #ff3b30;
+      --red-soft: rgba(255,59,48,0.1);
+      --amber: #ff9500;
+      --amber-soft: rgba(255,149,0,0.12);
+      --green: #34c759;
+    }
+    body.light-theme .app-header {
+      background: rgba(242,242,247,0.82);
+    }
+    body.light-theme .nav-pill {
+      background: rgba(255,255,255,0.86);
+      border-color: rgba(0,0,0,0.06);
+      box-shadow: 0 10px 34px rgba(0,0,0,0.14);
+    }
+    body.light-theme .nav-item .icon-wrap .icon-svg,
+    body.light-theme .nav-item .label {
+      color: #8e8e93;
+    }
+    body.light-theme .toast {
+      background: rgba(255,255,255,0.96);
+      border-color: rgba(0,0,0,0.08);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.16);
+    }
+    body.light-theme .ios-alert {
+      background: rgba(246,246,248,0.94);
+    }
+    body.light-theme .ios-alert-actions {
+      border-top-color: rgba(0,0,0,0.1);
+    }
+    body.light-theme .ios-alert-actions button + button {
+      border-left-color: rgba(0,0,0,0.1);
+    }
+    body.light-theme .ios-alert-input {
+      background: rgba(0,0,0,0.05);
+    }
+    body.light-theme .settings-item {
+      border-bottom-color: rgba(0,0,0,0.06);
+    }
+    body.light-theme .custom-select-list,
+    body.light-theme .bottom-sheet {
+      box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+    }
+    body.light-theme .select-action-bar-inner {
+      background: rgba(255,255,255,0.94);
+      border-color: rgba(0,0,0,0.07);
+      box-shadow: 0 12px 34px rgba(0,0,0,0.16);
+    }
   </style>
 </head>
 <body>
@@ -1777,14 +2337,17 @@
       <div class="chips-wrap" id="homeChips"></div>
       <div class="section-header">
         <h2 class="section-title">Saved for later</h2>
-        <div class="sort-wrap">
-          <select class="sort-select" id="homeSort">
-            <option value="recent">Recently saved</option>
-            <option value="oldest">Oldest</option>
-            <option value="price-low">Price: Low → High</option>
-            <option value="price-high">Price: High → Low</option>
-            <option value="priority">Priority</option>
-          </select>
+        <div class="section-header-right">
+          <button class="select-toggle-btn" id="selectToggleBtn">Select</button>
+          <div class="sort-wrap">
+            <select class="sort-select" id="homeSort">
+              <option value="recent">Recently saved</option>
+              <option value="oldest">Oldest</option>
+              <option value="price-low">Price: Low → High</option>
+              <option value="price-high">Price: High → Low</option>
+              <option value="priority">Priority</option>
+            </select>
+          </div>
         </div>
       </div>
       <div class="card-grid" id="homeGrid"></div>
@@ -1858,6 +2421,10 @@
         <div class="form-group">
           <label>Price / Status</label>
           <input type="text" id="addPrice" placeholder="$0 or Watch / Plan / Own" />
+        </div>
+        <div class="form-group">
+          <label>Target price (optional)</label>
+          <input type="text" inputmode="decimal" id="addTargetPrice" placeholder="Flag it when the price drops to this" />
         </div>
         <div class="form-group">
           <label>Notes</label>
@@ -2029,6 +2596,9 @@
   <!-- ===== TOAST CONTAINER ===== -->
   <div class="toast-container" id="toastContainer"></div>
 
+  <!-- ===== MODAL / SHEET OVERLAY (replaces native alert/confirm/prompt) ===== -->
+  <div class="modal-overlay" id="modalOverlay"></div>
+
   <!-- ===== BOTTOM NAVIGATION ===== -->
   <div class="bottom-nav-float" role="navigation" aria-label="Main navigation">
     <div class="nav-pill">
@@ -2094,6 +2664,8 @@
         export: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>',
         import: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/>',
         info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>',
+        chevronDown: '<path d="M6 9l6 6 6-6"/>',
+        checkMark: '<path d="M20 6L9 17l-5-5"/>',
         car: '<path d="M5 17h14M5 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm14 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0M3 17V11l2-5h12l3 5h2v6"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="17.5" cy="17" r="1.5"/>',
         laptop: '<rect x="4" y="4" width="16" height="11" rx="1"/><path d="M2 19h20"/>',
         plane: '<path d="M2 16l20-8-8 20-3-8-8-3z"/>',
@@ -2109,23 +2681,266 @@
       }
 
       // ============================================================
+      // FALLBACK IMAGE (used whenever an item has no image, or its
+      // image URL fails to load)
+      // ============================================================
+      const FALLBACK_IMAGE = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#1c1c1e"/><g fill="none" stroke="#48484a" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"><rect x="70" y="75" width="260" height="190" rx="18"/><circle cx="150" cy="140" r="20"/><path d="M70 225l85-65 55 45 50-38 70 58"/></g></svg>'
+      );
+      function safeImg(item) {
+        return (item && item.image) ? item.image : FALLBACK_IMAGE;
+      }
+      function imgFallbackAttr() {
+        return `onerror="this.onerror=null;this.src='${FALLBACK_IMAGE}';"`;
+      }
+
+      // ============================================================
+      // MODAL / SHEET SYSTEM
+      // Replaces native alert()/confirm()/prompt() with iOS-style
+      // sheets so the whole app stays consistent — no OS chrome.
+      // ============================================================
+      const modalOverlay = document.getElementById('modalOverlay');
+
+      function closeModal() {
+        modalOverlay.classList.remove('visible');
+        setTimeout(() => { modalOverlay.innerHTML = ''; }, 220);
+      }
+      modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) closeModal();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modalOverlay.classList.contains('visible')) closeModal();
+      });
+
+      function showConfirmSheet({ title, message = '', confirmLabel = 'Confirm', cancelLabel = 'Cancel', destructive = false, onConfirm }) {
+        modalOverlay.innerHTML = `
+          <div class="ios-alert" role="alertdialog" aria-modal="true">
+            <div class="ios-alert-title">${title}</div>
+            ${message ? `<div class="ios-alert-message">${message}</div>` : ''}
+            <div class="ios-alert-actions">
+              <button class="cancel" id="modalCancelBtn">${cancelLabel}</button>
+              <button class="${destructive ? 'destructive' : ''}" id="modalConfirmBtn">${confirmLabel}</button>
+            </div>
+          </div>
+        `;
+        modalOverlay.classList.add('visible');
+        document.getElementById('modalCancelBtn').addEventListener('click', closeModal);
+        document.getElementById('modalConfirmBtn').addEventListener('click', () => {
+          closeModal();
+          if (onConfirm) onConfirm();
+        });
+      }
+
+      function showInputSheet({ title, message = '', initialValue = '', placeholder = '', multiline = false, confirmLabel = 'Save', cancelLabel = 'Cancel', onConfirm }) {
+        const safeVal = (initialValue || '').replace(/"/g, '&quot;');
+        const fieldHtml = multiline
+          ? `<textarea class="ios-alert-input" id="modalInputField" placeholder="${placeholder}" rows="3">${initialValue || ''}</textarea>`
+          : `<input class="ios-alert-input" id="modalInputField" type="text" value="${safeVal}" placeholder="${placeholder}" />`;
+        modalOverlay.innerHTML = `
+          <div class="ios-alert" role="dialog" aria-modal="true">
+            <div class="ios-alert-title">${title}</div>
+            ${message ? `<div class="ios-alert-message">${message}</div>` : ''}
+            ${fieldHtml}
+            <div class="ios-alert-actions">
+              <button class="cancel" id="modalCancelBtn">${cancelLabel}</button>
+              <button id="modalConfirmBtn">${confirmLabel}</button>
+            </div>
+          </div>
+        `;
+        modalOverlay.classList.add('visible');
+        const field = document.getElementById('modalInputField');
+        field.focus();
+        if (!multiline && field.select) field.select();
+        const submit = () => {
+          const val = field.value;
+          closeModal();
+          if (onConfirm) onConfirm(val);
+        };
+        document.getElementById('modalCancelBtn').addEventListener('click', closeModal);
+        document.getElementById('modalConfirmBtn').addEventListener('click', submit);
+        if (!multiline) {
+          field.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
+        }
+      }
+
+      function showCollectionSheet(col, colItems) {
+        modalOverlay.innerHTML = `
+          <div class="bottom-sheet-wrap">
+            <div class="bottom-sheet" role="dialog" aria-modal="true">
+              <div class="bottom-sheet-handle"></div>
+              <div class="bottom-sheet-header">
+                <div class="icon-badge" style="background:${col.color || '#0a84ff'};">${iconSvg(col.icon || 'folder')}</div>
+                <div>
+                  <div class="bottom-sheet-title">${col.name}</div>
+                  <div class="bottom-sheet-count">${colItems.length} item${colItems.length !== 1 ? 's' : ''}</div>
+                </div>
+                <button class="bottom-sheet-close" id="sheetCloseBtn" aria-label="Close">${iconSvg('close')}</button>
+              </div>
+              <div class="bottom-sheet-list">
+                ${colItems.length ? colItems.map(i => `
+                  <div class="bottom-sheet-row" data-id="${i.id}">
+                    <img src="${safeImg(i)}" alt="${i.title}" ${imgFallbackAttr()} />
+                    <div class="bottom-sheet-row-body">
+                      <div class="bottom-sheet-row-title">${i.title}</div>
+                      <div class="bottom-sheet-row-cat">${i.category}</div>
+                    </div>
+                  </div>
+                `).join('') : `<div class="bottom-sheet-empty">No items in this collection yet.</div>`}
+              </div>
+            </div>
+          </div>
+        `;
+        modalOverlay.classList.add('visible');
+        document.getElementById('sheetCloseBtn').addEventListener('click', closeModal);
+        modalOverlay.querySelectorAll('.bottom-sheet-row').forEach(row => {
+          row.addEventListener('click', () => {
+            const item = getItemById(parseInt(row.dataset.id, 10));
+            closeModal();
+            if (item) openDetail(item);
+          });
+        });
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            const sheet = modalOverlay.querySelector('.bottom-sheet');
+            if (sheet) sheet.classList.add('appear');
+          });
+        });
+      }
+
+      function showChooseCollectionSheet(onChoose) {
+        modalOverlay.innerHTML = `
+          <div class="bottom-sheet-wrap">
+            <div class="bottom-sheet" role="dialog" aria-modal="true">
+              <div class="bottom-sheet-handle"></div>
+              <div class="bottom-sheet-header">
+                <div class="icon-badge" style="background:#0a84ff;">${iconSvg('folder')}</div>
+                <div>
+                  <div class="bottom-sheet-title">Move to collection</div>
+                  <div class="bottom-sheet-count">${collections.length} collection${collections.length !== 1 ? 's' : ''}</div>
+                </div>
+                <button class="bottom-sheet-close" id="sheetCloseBtnMove" aria-label="Close">${iconSvg('close')}</button>
+              </div>
+              <div class="bottom-sheet-list">
+                ${collections.length ? collections.map(c => `
+                  <div class="bottom-sheet-row" data-cid="${c.id}">
+                    <div class="icon-badge" style="background:${c.color || '#0a84ff'};width:48px;height:48px;border-radius:13px;">${iconSvg(c.icon || 'folder', 'icon-svg icon-svg-sm')}</div>
+                    <div class="bottom-sheet-row-body">
+                      <div class="bottom-sheet-row-title">${c.name}</div>
+                      <div class="bottom-sheet-row-cat">${c.items.length} item${c.items.length !== 1 ? 's' : ''}</div>
+                    </div>
+                  </div>
+                `).join('') : `<div class="bottom-sheet-empty">Create a collection first.</div>`}
+              </div>
+            </div>
+          </div>
+        `;
+        modalOverlay.classList.add('visible');
+        document.getElementById('sheetCloseBtnMove').addEventListener('click', closeModal);
+        modalOverlay.querySelectorAll('.bottom-sheet-row').forEach(row => {
+          row.addEventListener('click', () => {
+            const cid = parseInt(row.dataset.cid, 10);
+            closeModal();
+            onChoose(cid);
+          });
+        });
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            const sheet = modalOverlay.querySelector('.bottom-sheet');
+            if (sheet) sheet.classList.add('appear');
+          });
+        });
+      }
+
+      // ============================================================
+      // CUSTOM SELECT (replaces native OS-styled <select> dropdowns
+      // so pickers match the app's own dark theme)
+      // ============================================================
+      function enhanceSelect(select) {
+        if (!select || select._enhanced) return;
+        select._enhanced = true;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'custom-select' + (select.classList.contains('sort-select') ? ' custom-select-sm' : '');
+        select.parentNode.insertBefore(wrapper, select);
+
+        const trigger = document.createElement('button');
+        trigger.type = 'button';
+        trigger.className = 'custom-select-trigger';
+        wrapper.appendChild(trigger);
+
+        const list = document.createElement('div');
+        list.className = 'custom-select-list';
+        wrapper.appendChild(list);
+
+        wrapper.appendChild(select);
+        select.classList.add('visually-hidden-select');
+
+        function renderOptions() {
+          list.innerHTML = '';
+          Array.from(select.options).forEach(opt => {
+            const row = document.createElement('div');
+            const isSelected = opt.value === select.value;
+            row.className = 'custom-select-option' + (isSelected ? ' selected' : '');
+            row.innerHTML = `<span>${opt.textContent}</span>${isSelected ? iconSvg('checkMark', 'icon-svg icon-svg-sm check-mark') : ''}`;
+            row.addEventListener('click', () => {
+              select.value = opt.value;
+              select.dispatchEvent(new Event('change'));
+              refresh();
+              closeList();
+            });
+            list.appendChild(row);
+          });
+        }
+        function refresh() {
+          const opt = select.options[select.selectedIndex];
+          trigger.innerHTML = `<span>${opt ? opt.textContent : ''}</span>${iconSvg('chevronDown', 'icon-svg icon-svg-sm')}`;
+          renderOptions();
+        }
+        function openList() { list.classList.add('open'); wrapper.classList.add('open'); }
+        function closeList() { list.classList.remove('open'); wrapper.classList.remove('open'); }
+        trigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (list.classList.contains('open')) closeList(); else openList();
+        });
+        document.addEventListener('click', (e) => {
+          if (!wrapper.contains(e.target)) closeList();
+        });
+
+        select._refresh = refresh;
+        refresh();
+      }
+      function syncSelect(id) {
+        const el = document.getElementById(id);
+        if (el && el._refresh) el._refresh();
+      }
+
+      // ============================================================
       // TOAST SYSTEM
       // ============================================================
       const toastContainer = document.getElementById('toastContainer');
 
-      function showToast(message, type = 'success', duration = 3000) {
+      function showToast(message, type = 'success', duration = 3000, action = null) {
         const toast = document.createElement('div');
         toast.className = 'toast';
         const iconName = type === 'success' ? 'check' : type === 'error' ? 'close' : 'info';
         toast.innerHTML = `
           <div class="toast-icon ${type}">${iconSvg(iconName)}</div>
           <span class="toast-message">${message}</span>
+          ${action ? `<button class="toast-action" id="toastActionBtn">${action.label}</button>` : ''}
           <button class="toast-close" aria-label="Dismiss">${iconSvg('close')}</button>
         `;
         toastContainer.appendChild(toast);
         const closeBtn = toast.querySelector('.toast-close');
         closeBtn.addEventListener('click', () => removeToast(toast));
-        setTimeout(() => removeToast(toast), duration);
+        const timer = setTimeout(() => removeToast(toast), duration);
+        if (action) {
+          const actionBtn = toast.querySelector('#toastActionBtn');
+          actionBtn.addEventListener('click', () => {
+            clearTimeout(timer);
+            action.onClick();
+            removeToast(toast);
+          });
+        }
         return toast;
       }
 
@@ -2590,6 +3405,225 @@
       }
 
       // ============================================================
+      // PRICE TARGET HELPERS
+      // ============================================================
+      function parsePrice(str) {
+        const n = parseFloat((str || '').replace(/[$,]/g, ''));
+        return isNaN(n) ? null : n;
+      }
+      function priceFlagHtml(item) {
+        if (item.targetPrice == null || isNaN(item.targetPrice)) return '';
+        const current = parsePrice(item.price);
+        if (current == null) return '';
+        if (current <= item.targetPrice) {
+          return `<span class="price-flag hit">${iconSvg('checkMark')} At target</span>`;
+        }
+        return `<span class="price-flag">${iconSvg('tag')} Target $${item.targetPrice}</span>`;
+      }
+
+      // ============================================================
+      // DELETE WITH UNDO (single item and bulk)
+      // ============================================================
+      function deleteItemWithUndo(item, opts = {}) {
+        const idx = items.findIndex(i => i.id === item.id);
+        if (idx === -1) return;
+        const [removed] = items.splice(idx, 1);
+        const removedFromCollectionIds = collections.filter(c => c.items.includes(item.id)).map(c => c.id);
+        collections.forEach(c => { c.items = c.items.filter(id => id !== item.id); });
+        saveState();
+        renderHome();
+        renderCollections();
+        renderProfile();
+        if (opts.afterDelete) opts.afterDelete();
+        showToast(`Deleted "${removed.title}"`, 'success', 5000, {
+          label: 'Undo',
+          onClick: () => {
+            items.unshift(removed);
+            removedFromCollectionIds.forEach(cid => {
+              const c = collections.find(cc => cc.id === cid);
+              if (c) c.items.push(removed.id);
+            });
+            saveState();
+            renderHome();
+            renderCollections();
+            renderProfile();
+            showToast('Restored');
+          }
+        });
+      }
+
+      function bulkDeleteWithUndo(ids) {
+        const removedItems = items.filter(i => ids.includes(i.id));
+        if (!removedItems.length) return;
+        const collectionMap = {};
+        removedItems.forEach(it => {
+          collectionMap[it.id] = collections.filter(c => c.items.includes(it.id)).map(c => c.id);
+        });
+        items = items.filter(i => !ids.includes(i.id));
+        collections.forEach(c => { c.items = c.items.filter(id => !ids.includes(id)); });
+        saveState();
+        toggleSelectMode(false);
+        renderHome();
+        renderCollections();
+        renderProfile();
+        showToast(`Deleted ${removedItems.length} item${removedItems.length !== 1 ? 's' : ''}`, 'success', 5000, {
+          label: 'Undo',
+          onClick: () => {
+            removedItems.forEach(it => items.unshift(it));
+            Object.keys(collectionMap).forEach(id => {
+              collectionMap[id].forEach(cid => {
+                const c = collections.find(cc => cc.id === cid);
+                if (c) c.items.push(parseInt(id, 10));
+              });
+            });
+            saveState();
+            renderHome();
+            renderCollections();
+            renderProfile();
+            showToast('Restored');
+          }
+        });
+      }
+
+      // ============================================================
+      // MULTI-SELECT MODE (Home page)
+      // ============================================================
+      let selectMode = false;
+      let selectedIds = new Set();
+
+      function toggleSelectMode(forceOn) {
+        selectMode = typeof forceOn === 'boolean' ? forceOn : !selectMode;
+        if (!selectMode) selectedIds.clear();
+        const btn = document.getElementById('selectToggleBtn');
+        if (btn) btn.textContent = selectMode ? 'Done' : 'Select';
+        renderHome();
+        updateSelectBar();
+      }
+
+      function toggleCardSelection(id, cardEl) {
+        if (selectedIds.has(id)) {
+          selectedIds.delete(id);
+          cardEl.classList.remove('selected');
+        } else {
+          selectedIds.add(id);
+          cardEl.classList.add('selected');
+        }
+        const check = cardEl.querySelector('.select-check');
+        if (check) check.innerHTML = selectedIds.has(id) ? iconSvg('checkMark') : '';
+        updateSelectBar();
+      }
+
+      function updateSelectBar() {
+        let bar = document.getElementById('selectActionBar');
+        if (selectMode && selectedIds.size > 0) {
+          if (!bar) {
+            bar = document.createElement('div');
+            bar.id = 'selectActionBar';
+            bar.className = 'select-action-bar';
+            document.body.appendChild(bar);
+          }
+          bar.innerHTML = `
+            <div class="select-action-bar-inner">
+              <span class="select-count">${selectedIds.size} selected</span>
+              <div class="select-actions">
+                <button id="selectMoveBtn">${iconSvg('folder', 'icon-svg icon-svg-sm')} Move</button>
+                <button id="selectDeleteBtn" class="destructive">${iconSvg('trash', 'icon-svg icon-svg-sm')} Delete</button>
+              </div>
+            </div>
+          `;
+          requestAnimationFrame(() => bar.classList.add('visible'));
+          document.getElementById('selectMoveBtn').addEventListener('click', openMoveSheet);
+          document.getElementById('selectDeleteBtn').addEventListener('click', () => {
+            const ids = Array.from(selectedIds);
+            showConfirmSheet({
+              title: `Delete ${ids.length} item${ids.length !== 1 ? 's' : ''}?`,
+              message: 'You can undo right after.',
+              confirmLabel: 'Delete',
+              destructive: true,
+              onConfirm: () => bulkDeleteWithUndo(ids)
+            });
+          });
+        } else if (bar) {
+          bar.classList.remove('visible');
+        }
+      }
+
+      function openMoveSheet() {
+        showChooseCollectionSheet((cid) => {
+          const col = collections.find(c => c.id === cid);
+          if (!col) return;
+          const ids = Array.from(selectedIds);
+          ids.forEach(id => {
+            collections.forEach(c => { c.items = c.items.filter(iid => iid !== id); });
+            col.items.push(id);
+            const item = getItemById(id);
+            if (item) item.collection = col.name;
+          });
+          saveState();
+          toggleSelectMode(false);
+          renderHome();
+          renderCollections();
+          renderProfile();
+          showToast(`Moved to ${col.name}`);
+        });
+      }
+
+      // ============================================================
+      // SWIPE GESTURES (delete / bookmark) on saved cards
+      // ============================================================
+      function attachSwipe(card, item) {
+        let startX = 0, startY = 0, dx = 0, dragging = false, decided = null;
+        const threshold = 90;
+
+        card.addEventListener('pointerdown', (e) => {
+          if (selectMode) return;
+          if (e.target.closest('.bookmark-btn')) return;
+          startX = e.clientX; startY = e.clientY; dragging = true; decided = null; dx = 0;
+          card.style.transition = 'none';
+          try { card.setPointerCapture(e.pointerId); } catch (err) {}
+        });
+        card.addEventListener('pointermove', (e) => {
+          if (!dragging) return;
+          const diffX = e.clientX - startX;
+          const diffY = e.clientY - startY;
+          if (!decided) {
+            if (Math.abs(diffX) > 8 || Math.abs(diffY) > 8) {
+              decided = Math.abs(diffX) > Math.abs(diffY) ? 'h' : 'v';
+            } else {
+              return;
+            }
+          }
+          if (decided !== 'h') return;
+          dx = diffX;
+          card.style.transform = `translateX(${dx}px)`;
+          card.style.opacity = String(Math.max(0.25, 1 - Math.abs(dx) / 300));
+        });
+        function endDrag() {
+          if (!dragging) return;
+          dragging = false;
+          card.style.transition = 'transform 0.25s cubic-bezier(0.2,0,0,1), opacity 0.25s';
+          if (decided === 'h') {
+            if (dx <= -threshold) {
+              card.style.transform = 'translateX(-120%)';
+              card.style.opacity = '0';
+              setTimeout(() => deleteItemWithUndo(item), 180);
+              return;
+            } else if (dx >= threshold) {
+              item.bookmarked = !item.bookmarked;
+              saveState();
+              showToast(item.bookmarked ? 'Added to favorites' : 'Removed from favorites');
+              renderHome();
+              return;
+            }
+          }
+          card.style.transform = 'translateX(0)';
+          card.style.opacity = '1';
+        }
+        card.addEventListener('pointerup', endDrag);
+        card.addEventListener('pointercancel', endDrag);
+      }
+
+      // ============================================================
       // DOM REFS
       // ============================================================
       const pages = {
@@ -2842,7 +3876,7 @@
           const div = document.createElement('div');
           div.className = 'recent-item';
           div.innerHTML = `
-            <img src="${item.image}" alt="${item.alt || item.title}" loading="lazy" />
+            <img src="${safeImg(item)}" alt="${item.alt || item.title}" loading="lazy" ${imgFallbackAttr()} />
             <div class="recent-item-body">
               <div class="recent-item-title">${item.title}</div>
               <div class="recent-item-category">${item.category}</div>
@@ -2858,21 +3892,24 @@
       // ============================================================
       function createCard(item) {
         const card = document.createElement('div');
-        card.className = 'saved-card';
+        card.className = 'saved-card' + (selectMode ? ' selectable' : '') + (selectedIds.has(item.id) ? ' selected' : '');
         card.dataset.id = item.id;
         const bookmarkIcon = item.bookmarked ? ICONS.bookmarkFilled : ICONS.bookmark;
         card.innerHTML = `
           <div class="saved-card-img">
-            <img src="${item.image}" alt="${item.alt || item.title}" loading="lazy" />
+            <img src="${safeImg(item)}" alt="${item.alt || item.title}" loading="lazy" ${imgFallbackAttr()} />
+            ${selectMode ? `<div class="select-check">${selectedIds.has(item.id) ? iconSvg('checkMark') : ''}</div>` : `
             <button class="bookmark-btn ${item.bookmarked ? 'active' : ''}" data-id="${item.id}" aria-label="Bookmark item">
               <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${bookmarkIcon}</svg>
             </button>
+            `}
           </div>
           <div class="saved-card-body">
             <div class="saved-card-category">${item.category}</div>
             <div class="saved-card-title">${item.title}</div>
             <div class="saved-card-price">${item.price}</div>
             ${item.note ? `<div class="saved-card-note">${item.note}</div>` : ''}
+            ${priceFlagHtml(item)}
             <div class="saved-card-footer">
               <span class="saved-card-date">${formatDateShort(item.createdAt)}</span>
               <span class="saved-card-priority ${item.priority.toLowerCase()}">${item.priority}</span>
@@ -2881,18 +3918,25 @@
         `;
         card.addEventListener('click', (e) => {
           if (e.target.closest('.bookmark-btn')) return;
+          if (selectMode) {
+            toggleCardSelection(item.id, card);
+            return;
+          }
           openDetail(item);
         });
         const bm = card.querySelector('.bookmark-btn');
-        bm.addEventListener('click', (e) => {
-          e.stopPropagation();
-          item.bookmarked = !item.bookmarked;
-          const icon = bm.querySelector('svg');
-          icon.innerHTML = item.bookmarked ? ICONS.bookmarkFilled : ICONS.bookmark;
-          bm.classList.toggle('active');
-          saveState();
-          showToast(item.bookmarked ? 'Added to favorites' : 'Removed from favorites');
-        });
+        if (bm) {
+          bm.addEventListener('click', (e) => {
+            e.stopPropagation();
+            item.bookmarked = !item.bookmarked;
+            const icon = bm.querySelector('svg');
+            icon.innerHTML = item.bookmarked ? ICONS.bookmarkFilled : ICONS.bookmark;
+            bm.classList.toggle('active');
+            saveState();
+            showToast(item.bookmarked ? 'Added to favorites' : 'Removed from favorites');
+          });
+        }
+        attachSwipe(card, item);
         return card;
       }
 
@@ -2909,6 +3953,9 @@
       });
       document.getElementById('homeEmptyAdd').addEventListener('click', () => {
         navigateTo('pageAdd');
+      });
+      document.getElementById('selectToggleBtn').addEventListener('click', () => {
+        toggleSelectMode();
       });
 
       // ============================================================
@@ -2942,7 +3989,7 @@
           card.style.cursor = 'pointer';
           card.innerHTML = `
             <div class="saved-card-img">
-              <img src="${exploreImages[cat] || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop&auto=format'}" alt="${cat}" loading="lazy" />
+              <img src="${exploreImages[cat] || FALLBACK_IMAGE}" alt="${cat}" loading="lazy" ${imgFallbackAttr()} />
             </div>
             <div class="saved-card-body">
               <div class="saved-card-title">${cat}</div>
@@ -2955,6 +4002,7 @@
           card.querySelector('button').addEventListener('click', (e) => {
             e.stopPropagation();
             document.getElementById('addCategory').value = cat;
+            syncSelect('addCategory');
             document.getElementById('addTitle').value = `Great ${cat} idea`;
             navigateTo('pageAdd');
           });
@@ -2968,6 +4016,7 @@
           chip.textContent = c;
           chip.addEventListener('click', () => {
             document.getElementById('addCategory').value = c;
+            syncSelect('addCategory');
             document.getElementById('addTitle').value = `Interesting ${c} find`;
             navigateTo('pageAdd');
           });
@@ -3001,12 +4050,11 @@
             <div class="name">${col.name}</div>
             <div class="count">${colItems.length} item${colItems.length !== 1 ? 's' : ''}</div>
             ${previews.length ? `<div class="preview-images">
-              ${previews.map(item => `<img src="${item.image}" alt="${item.title}" loading="lazy" />`).join('')}
+              ${previews.map(item => `<img src="${safeImg(item)}" alt="${item.title}" loading="lazy" ${imgFallbackAttr()} />`).join('')}
             </div>` : ''}
           `;
           card.addEventListener('click', () => {
-            const itemsList = colItems.map(i => '• ' + i.title).join('\n');
-            alert(`${col.name}\n${colItems.length} items\n\n${itemsList || 'No items yet.'}`);
+            showCollectionSheet(col, colItems);
           });
           grid.appendChild(card);
         });
@@ -3016,20 +4064,27 @@
       // CREATE COLLECTION
       // ============================================================
       document.getElementById('createCollectionBtn').addEventListener('click', () => {
-        const name = prompt('Collection name:');
-        if (name && name.trim()) {
-          const palette = ['#0a84ff', '#30d158', '#ff9f0a', '#bf5af2', '#64d2ff', '#ff375f', '#ffd60a'];
-          collections.push({
-            id: nextCollectionId++,
-            name: name.trim(),
-            items: [],
-            icon: 'folder',
-            color: palette[collections.length % palette.length]
-          });
-          saveState();
-          renderCollections();
-          showToast('Collection created');
-        }
+        showInputSheet({
+          title: 'New collection',
+          message: 'Give it a name to organize your saved things.',
+          placeholder: 'Collection name',
+          confirmLabel: 'Create',
+          onConfirm: (name) => {
+            if (name && name.trim()) {
+              const palette = ['#0a84ff', '#30d158', '#ff9f0a', '#bf5af2', '#64d2ff', '#ff375f', '#ffd60a'];
+              collections.push({
+                id: nextCollectionId++,
+                name: name.trim(),
+                items: [],
+                icon: 'folder',
+                color: palette[collections.length % palette.length]
+              });
+              saveState();
+              renderCollections();
+              showToast('Collection created');
+            }
+          }
+        });
       });
       document.getElementById('collectionEmptyBtn').addEventListener('click', () => {
         document.getElementById('createCollectionBtn').click();
@@ -3100,7 +4155,7 @@
         const collection = collections.find(c => c.name === item.collection);
         container.innerHTML = `
           <div class="detail-image">
-            <img src="${item.image}" alt="${item.alt || item.title}" />
+            <img src="${safeImg(item)}" alt="${item.alt || item.title}" ${imgFallbackAttr()} />
           </div>
           <div class="detail-category">${iconSvg('folder', 'icon-svg icon-svg-sm')} ${item.category}</div>
           <div class="detail-title">${item.title}</div>
@@ -3117,6 +4172,14 @@
             <div class="detail-meta-item">
               <span class="label">${iconSvg('clock', 'icon-svg icon-svg-sm')} Added</span>
               <span class="value">${new Date(item.createdAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</span>
+            </div>
+            <div class="detail-meta-item" id="targetPriceMeta" style="cursor:pointer;grid-column:1 / -1;">
+              <span class="label">${iconSvg('tag', 'icon-svg icon-svg-sm')} Target price</span>
+              <span class="value" style="${item.targetPrice != null ? '' : 'color:var(--label-4);font-weight:500;'}">
+                ${item.targetPrice != null
+                  ? `$${item.targetPrice}${(() => { const c = parsePrice(item.price); return (c != null && c <= item.targetPrice) ? ' · at target' : ''; })()}`
+                  : 'Tap to set a target'}
+              </span>
             </div>
           </div>
 
@@ -3149,28 +4212,50 @@
         `;
 
         document.getElementById('detailEditBtn').addEventListener('click', () => {
-          const newNote = prompt('Edit note:', item.note || '');
-          if (newNote !== null) {
-            item.note = newNote;
-            saveState();
-            renderDetail(item);
-            showToast('Changes saved');
-          }
+          showInputSheet({
+            title: 'Edit note',
+            initialValue: item.note || '',
+            placeholder: 'Why are you saving this?',
+            multiline: true,
+            confirmLabel: 'Save',
+            onConfirm: (newNote) => {
+              item.note = newNote;
+              saveState();
+              renderDetail(item);
+              showToast('Changes saved');
+            }
+          });
+        });
+
+        document.getElementById('targetPriceMeta').addEventListener('click', () => {
+          showInputSheet({
+            title: 'Target price',
+            message: 'Get a visual flag when the price drops to (or under) this.',
+            initialValue: item.targetPrice != null ? String(item.targetPrice) : '',
+            placeholder: 'e.g. 100',
+            confirmLabel: 'Save',
+            onConfirm: (val) => {
+              const num = parseFloat(val);
+              item.targetPrice = isNaN(num) ? null : num;
+              saveState();
+              renderDetail(item);
+              renderHome();
+              showToast(item.targetPrice != null ? 'Target price set' : 'Target price cleared');
+            }
+          });
         });
 
         document.getElementById('detailDeleteBtn').addEventListener('click', () => {
-          if (confirm(`Delete "${item.title}"?`)) {
-            const idx = items.findIndex(i => i.id === item.id);
-            if (idx !== -1) {
-              items.splice(idx, 1);
-              collections.forEach(c => {
-                c.items = c.items.filter(id => id !== item.id);
-              });
-              saveState();
-              showToast('Item deleted');
+          showConfirmSheet({
+            title: `Delete "${item.title}"?`,
+            message: 'You can undo right after.',
+            confirmLabel: 'Delete',
+            destructive: true,
+            onConfirm: () => {
               goBack();
+              deleteItemWithUndo(item);
             }
-          }
+          });
         });
 
         // Update header title
@@ -3199,6 +4284,7 @@
           opt2.textContent = c.name;
           select.appendChild(opt2);
         });
+        syncSelect('addCollection');
       }
 
       document.getElementById('addImageBtn').addEventListener('click', () => {
@@ -3235,6 +4321,8 @@
         const title = document.getElementById('addTitle').value.trim();
         const category = document.getElementById('addCategory').value;
         const price = document.getElementById('addPrice').value.trim() || 'Saved';
+        const targetPriceRaw = document.getElementById('addTargetPrice').value.trim();
+        const targetPrice = targetPriceRaw ? parseFloat(targetPriceRaw.replace(/[$,]/g, '')) : null;
         const note = document.getElementById('addNote').value.trim();
         const url = document.getElementById('addUrl').value.trim();
         const priority = document.getElementById('addPriority').value;
@@ -3260,6 +4348,7 @@
           title,
           category,
           price,
+          targetPrice: (targetPrice != null && !isNaN(targetPrice)) ? targetPrice : null,
           note: note || 'No note added.',
           priority,
           image: addImageData || 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=450&fit=crop&auto=format',
@@ -3290,6 +4379,7 @@
 
         document.getElementById('addTitle').value = '';
         document.getElementById('addPrice').value = '';
+        document.getElementById('addTargetPrice').value = '';
         document.getElementById('addNote').value = '';
         document.getElementById('addUrl').value = '';
         document.getElementById('addImagePreview').style.display = 'none';
@@ -3377,35 +4467,55 @@
       });
 
       document.getElementById('settingsClearData').addEventListener('click', () => {
-        if (confirm('Clear all saved data? This cannot be undone.')) {
-          items = [];
-          collections = [];
-          notifications = [];
-          saveState();
-          renderHome();
-          renderCollections();
-          renderProfile();
-          renderNotifications();
-          showToast('Data cleared');
-        }
+        showConfirmSheet({
+          title: 'Clear saved data?',
+          message: 'All saved things and collections will be removed. This can\'t be undone.',
+          confirmLabel: 'Clear data',
+          destructive: true,
+          onConfirm: () => {
+            items = [];
+            collections = [];
+            notifications = [];
+            saveState();
+            renderHome();
+            renderCollections();
+            renderProfile();
+            renderNotifications();
+            showToast('Data cleared');
+          }
+        });
       });
 
       document.getElementById('settingsReset').addEventListener('click', () => {
-        if (confirm('Reset app to default state? This cannot be undone.')) {
-          localStorage.removeItem('savmo_data_v3');
-          location.reload();
-        }
+        showConfirmSheet({
+          title: 'Reset app?',
+          message: 'Savmo will go back to its default state. This can\'t be undone.',
+          confirmLabel: 'Reset',
+          destructive: true,
+          onConfirm: () => {
+            localStorage.removeItem('savmo_data_v3');
+            location.reload();
+          }
+        });
       });
 
       // ============================================================
       // PROFILE ACTIONS
       // ============================================================
       document.getElementById('profileEditBtn').addEventListener('click', () => {
-        const name = prompt('Enter your name:', 'Savmo User');
-        if (name && name.trim()) {
-          document.querySelector('.profile-name').textContent = name.trim();
-          showToast('Profile updated');
-        }
+        showInputSheet({
+          title: 'Edit profile',
+          message: 'This is the name shown on your profile.',
+          initialValue: document.querySelector('.profile-name').textContent,
+          placeholder: 'Your name',
+          confirmLabel: 'Save',
+          onConfirm: (name) => {
+            if (name && name.trim()) {
+              document.querySelector('.profile-name').textContent = name.trim();
+              showToast('Profile updated');
+            }
+          }
+        });
       });
 
       document.getElementById('profileSignOut').addEventListener('click', () => {
@@ -3424,6 +4534,10 @@
       // ============================================================
       loadState();
       populateCollectionSelect();
+      enhanceSelect(document.getElementById('addCategory'));
+      enhanceSelect(document.getElementById('addPriority'));
+      enhanceSelect(document.getElementById('addCollection'));
+      enhanceSelect(document.getElementById('homeSort'));
       renderHome();
       renderExplore();
       renderCollections();
